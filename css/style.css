@@ -1,0 +1,589 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #1a1a2e;
+    --vw: 88%;
+    --bubble-bg: #fff;
+    --bubble-border: 2.5px solid #111;
+    --divider: 3px solid #000;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif;
+    background: var(--bg);
+    user-select: none;
+}
+
+#app {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.screen {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+}
+
+/* ========================================
+   BACKGROUND
+   ======================================== */
+.bg-layer {
+    width: 100%;
+    height: 100%;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.bg-panel {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.bg-split-v {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+.bg-split-v .bg-panel { flex: 1; }
+.bg-split-v .bg-panel:first-child { border-right: var(--divider); }
+
+.bg-split-h {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+.bg-split-h .bg-panel { flex: 1; }
+.bg-split-h .bg-panel:first-child { border-bottom: var(--divider); }
+
+/* ========================================
+   DIAGONAL - punta a punta exacto (0,0 → 100%,100%)
+   ======================================== */
+.bg-diagonal {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.bg-diagonal .bg-panel {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* ↘ (0,0 → 100%,100%): de esquina superior-izquierda a esquina inferior-derecha
+   bg-second = capa base completa (se ve en triángulo inferior-izquierdo)
+   bg-first  = capa recortada con clip-path (triángulo superior-derecho) */
+.diag-tl-br .bg-second {
+    z-index: 1;
+}
+.diag-tl-br .bg-first {
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+    z-index: 2;
+}
+
+/* ↙ (100%,0 → 0,100%): de esquina superior-derecha a esquina inferior-izquierda
+   bg-second = capa base completa (se ve en triángulo inferior-derecho)
+   bg-first  = capa recortada con clip-path (triángulo superior-izquierdo) */
+.diag-tr-bl .bg-second {
+    z-index: 1;
+}
+.diag-tr-bl .bg-first {
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+    z-index: 2;
+}
+
+/* Línea divisoria sobre el corte exacto */
+.bg-diagonal::after {
+    content: '';
+    position: absolute;
+    z-index: 3;
+    background: #000;
+    height: 3px;
+    pointer-events: none;
+}
+
+.diag-tl-br::after {
+    top: 0; left: 0;
+    width: 142%;
+    height: 3px;
+    transform-origin: 0 0;
+    transform: rotate(45deg);
+}
+
+.diag-tr-bl::after {
+    top: 0; right: 0;
+    width: 142%;
+    height: 3px;
+    transform-origin: 100% 0;
+    transform: rotate(-45deg);
+}
+
+/* ========================================
+   FRAME - marco del fondo
+   ======================================== */
+.scene-frame {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: var(--vw);
+    height: 84%;
+    border: 2px solid rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: visible;
+    z-index: 1;
+}
+
+.scene-visual {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    z-index: 2;
+}
+
+/* ========================================
+   ELEMENTS
+   ======================================== */
+.el {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+.el.show { opacity: 1; }
+.el.always-on { opacity: 1 !important; }
+
+/* ========================================
+   CHARACTERS
+   ======================================== */
+.char {
+    bottom: 0;
+    height: 65%;
+    display: flex;
+    align-items: flex-end;
+    z-index: 5;
+}
+
+.char.pos-left   { left: 2%; }
+.char.pos-right  { right: 2%; }
+.char.pos-center { left: 50%; transform: translateX(-50%); }
+
+/* Diagonal: dentro del triángulo visible */
+.char.pos-tl {
+    top: 2%; left: 2%;
+    height: 50%;
+    align-items: flex-start;
+}
+
+.char.pos-tr {
+    top: 2%; right: 2%;
+    height: 50%;
+    align-items: flex-start;
+}
+
+.char.pos-bl {
+    bottom: 2%; left: 2%;
+    height: 50%;
+}
+
+.char.pos-br {
+    bottom: 2%; right: 2%;
+    height: 50%;
+}
+
+/* Split: cuadrantes */
+.char.pos-top-right {
+    top: 0; left: 0;
+    width: 100%; height: 50%;
+    justify-content: flex-end;
+    padding-right: 2%;
+}
+
+.char.pos-top-left {
+    top: 0; left: 0;
+    width: 100%; height: 50%;
+    justify-content: flex-start;
+    padding-left: 2%;
+}
+
+.char.pos-bottom-right {
+    bottom: 0; left: 0;
+    width: 100%; height: 50%;
+    justify-content: flex-end;
+    padding-right: 2%;
+}
+
+.char.pos-bottom-left {
+    bottom: 0; left: 0;
+    width: 100%; height: 50%;
+    justify-content: flex-start;
+    padding-left: 2%;
+}
+
+.char.pos-top {
+    top: 0; left: 0;
+    width: 100%; height: 50%;
+    justify-content: center;
+}
+
+.char.pos-bottom {
+    bottom: 0; left: 0;
+    width: 100%; height: 50%;
+    justify-content: center;
+}
+
+.char-img {
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 10px rgba(0,0,0,0.4));
+}
+
+/* ========================================
+   BUBBLES - posicionadas desde el personaje hacia el centro
+   ======================================== */
+.bubble {
+    min-width: 190px;
+    max-width: 42%;
+    padding: 12px 20px;
+    background: var(--bubble-bg);
+    border: var(--bubble-border);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.15);
+    position: absolute;
+    z-index: 20;
+}
+
+.bubble::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+/* left → 6% izquierda, junto al personaje → se extiende al centro */
+.bubble.pos-left {
+    left: 6%;
+    top: 8%;
+}
+.bubble.pos-left::after {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 11px solid var(--bubble-bg);
+    bottom: -10px;
+    left: 20px;
+}
+
+/* right → 6% derecha, junto al personaje → se extiende al centro */
+.bubble.pos-right {
+    right: 6%;
+    top: 8%;
+}
+.bubble.pos-right::after {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 11px solid var(--bubble-bg);
+    bottom: -10px;
+    right: 20px;
+}
+
+/* center → centrada arriba */
+.bubble.pos-center {
+    left: 50%;
+    top: 5%;
+    transform: translateX(-50%);
+}
+.bubble.pos-center::after {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 11px solid var(--bubble-bg);
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* top-right → 10% derecha, 6% arriba, junto al personaje → centro */
+.bubble.pos-top-right {
+    right: 17%;
+    top: 6%;
+}
+.bubble.pos-top-right::after {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 11px solid var(--bubble-bg);
+    transform: rotate(45deg);
+    bottom: 10px;
+    right: -10px;
+}
+
+/* top-left → 10% izquierda, 6% arriba, junto al personaje → centro */
+.bubble.pos-top-left {
+    left: 17%;
+    top: 6%;
+}
+.bubble.pos-top-left::after {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 11px solid var(--bubble-bg);
+    transform: rotate(-45deg);
+    bottom: 10px;
+    left: -10px;
+}
+
+/* bottom-right → 10% derecha, 6% abajo, junto al personaje → centro */
+.bubble.pos-bottom-right {
+    right: 20%;
+    bottom: 6%;
+}
+.bubble.pos-bottom-right::after {
+    border-top: none;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 11px solid var(--bubble-bg);
+    transform: rotate(-45deg);
+    top: 10px;
+    right: -10px;
+}
+
+/* bottom-left → 10% izquierda, 6% abajo, junto al personaje → centro */
+.bubble.pos-bottom-left {
+    left: 20%;
+    bottom: 6%;
+}
+.bubble.pos-bottom-left::after {
+    border-top: none;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 11px solid var(--bubble-bg);
+    transform: rotate(45deg);
+    top: 10px;
+    left: -10px;
+}
+
+/* tl → 8% izquierda, 5% arriba, junto al personaje → centro */
+.bubble.pos-tl {
+    left: 20%;
+    top: 5%;
+}
+.bubble.pos-tl::after {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 11px solid var(--bubble-bg);
+    transform: rotate(-45deg);
+    bottom: 10px;
+    left: -10px;
+}
+
+/* tr → 8% derecha, 5% arriba, junto al personaje → centro */
+.bubble.pos-tr {
+    right: 20%;
+    top: 5%;
+}
+.bubble.pos-tr::after {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 11px solid var(--bubble-bg);
+    transform: rotate(45deg);
+    bottom: 10px;
+    right: -10px;
+}
+
+/* bl → 8% izquierda, 5% abajo, junto al personaje → centro */
+.bubble.pos-bl {
+    left: 20%;
+    bottom: 15%;
+}
+.bubble.pos-bl::after {
+    border-top: none;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 11px solid var(--bubble-bg);
+    transform: rotate(45deg);
+    top: 10px;
+    left: -10px;
+}
+
+/* br → 8% derecha, 5% abajo, junto al personaje → centro */
+.bubble.pos-br {
+    right: 20%;
+    bottom: 15%;
+}
+.bubble.pos-br::after {
+    border-top: none;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 11px solid var(--bubble-bg);
+    transform: rotate(-45deg);
+    top: 10px;
+    right: -10px;
+}
+
+.bubble-jp {
+    font-size: clamp(14px, 2.8vw, 25px);
+    color: #1a1a1a;
+    line-height: 1.5;
+    margin-bottom: 2px;
+}
+
+.bubble-en {
+    font-size: clamp(9px, 1.5vw, 12px);
+    color: #666;
+    font-style: italic;
+}
+
+/* ========================================
+   TITLE / SUBTITLE / NAMES / SCROLL HINT
+   ======================================== */
+.el-title {
+    top: 28%; left: 50%; transform: translateX(-50%);
+    font-size: clamp(22px, 4.5vw, 50px);
+    color: #fff;
+    text-shadow: 0 0 18px rgba(255,107,157,0.4), 0 2px 5px rgba(0,0,0,0.3);
+    white-space: nowrap;
+    letter-spacing: 2px;
+}
+
+.el-subtitle {
+    top: 44%; left: 50%; transform: translateX(-50%);
+    font-size: clamp(11px, 2.2vw, 18px);
+    color: #FF6B9D;
+    text-shadow: 0 0 8px rgba(255,107,157,0.2);
+    white-space: nowrap;
+}
+
+.el-names {
+    top: 52%; left: 50%; transform: translateX(-50%);
+    font-size: clamp(10px, 1.6vw, 14px);
+    color: rgba(255,255,255,0.35);
+    white-space: nowrap;
+}
+
+.el-scroll-hint {
+    position: absolute;
+    bottom: 40px; left: 50%; transform: translateX(-50%);
+    color: rgba(255,255,255,0.3);
+    font-size: 12px;
+    animation: hint-bounce 2s ease-in-out infinite;
+}
+
+@keyframes hint-bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-8px); }
+}
+
+/* ========================================
+   CLOSING
+   ======================================== */
+.el-ctitle {
+    top: 28%; left: 50%; transform: translateX(-50%);
+    font-size: clamp(26px, 5.5vw, 58px);
+    color: #fff;
+    text-shadow: 0 0 22px rgba(255,255,255,0.2);
+    white-space: nowrap;
+}
+
+.el-csub {
+    top: 44%; left: 50%; transform: translateX(-50%);
+    font-size: clamp(11px, 2.2vw, 17px);
+    color: rgba(255,255,255,0.55);
+    white-space: nowrap;
+}
+
+.el-cnames {
+    top: 52%; left: 50%; transform: translateX(-50%);
+    font-size: clamp(10px, 1.6vw, 13px);
+    color: rgba(255,255,255,0.3);
+    white-space: nowrap;
+}
+
+.el-cclass {
+    top: 58%; left: 50%; transform: translateX(-50%);
+    font-size: clamp(9px, 1.4vw, 12px);
+    color: rgba(255,255,255,0.2);
+    white-space: nowrap;
+}
+
+/* ========================================
+   TRANSITION OVERLAY
+   ======================================== */
+#transition-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1000;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#transition-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* ========================================
+   SAKURA
+   ======================================== */
+.sakura-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.sakura {
+    position: absolute;
+    top: -10%;
+    width: 10px;
+    height: 10px;
+    background: #FFB7C5;
+    border-radius: 50% 0 50% 50%;
+    opacity: 0.35;
+    animation: sakura-fall linear infinite;
+}
+
+@keyframes sakura-fall {
+    0%   { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 0.55; }
+    50%  { opacity: 0.35; }
+    100% { transform: translateY(110vh) rotate(720deg) translateX(80px); opacity: 0; }
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+    :root { --vw: 93%; }
+    .bubble { min-width: 140px; max-width: 58%; padding: 10px 14px; }
+    .char { height: 58%; }
+}
+
+@media (max-width: 480px) {
+    :root { --vw: 95%; }
+    .bubble { min-width: 100px; max-width: 70%; }
+    .bubble-jp { font-size: 13px !important; }
+    .bubble-en { font-size: 10px !important; }
+}
