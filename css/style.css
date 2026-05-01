@@ -116,26 +116,20 @@ html, body {
 .bg-diagonal::after {
     content: '';
     position: absolute;
+    inset: 0;
     z-index: 3;
     background: #000;
-    height: 3px;
     pointer-events: none;
 }
 
+/* ↘ línea de esquina (0,0) a (100%,100%) */
 .diag-tl-br::after {
-    top: 0; left: 0;
-    width: 142%;
-    height: 3px;
-    transform-origin: 0 0;
-    transform: rotate(45deg);
+    clip-path: polygon(0 0, 3px 0, 100% calc(100% - 2px), calc(100% - 2px) 100%);
 }
 
+/* ↙ línea de esquina (100%,0) a (0,100%) */
 .diag-tr-bl::after {
-    top: 0; right: 0;
-    width: 142%;
-    height: 3px;
-    transform-origin: 100% 0;
-    transform: rotate(-45deg);
+    clip-path: polygon(100% 0, calc(100% - 3px) 0, 0 calc(100% - 2px), 2px 100%);
 }
 
 /* ========================================

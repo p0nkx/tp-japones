@@ -60,9 +60,9 @@ const storyContent = [
       bottom: 'clase.jpg',
     },
     sequence: [
-      { type: 'character', id: 'komori', file: 'komori.png', position: 'tl' },
+      { type: 'character', id: 'komori', file: 'komori.png', position: 'bl' },
       { type: 'bubble', target: 'komori', text: { jp: '...', en: '...' } },
-      { type: 'character', id: 'asahi', file: 'asahi.png', position: 'br' },
+      { type: 'character', id: 'asahi', file: 'asahi.png', position: 'tr' },
       { type: 'bubble', target: 'asahi', text: { jp: '...', en: '...' } },
     ],
   },
@@ -77,9 +77,9 @@ const storyContent = [
       bottom: 'fondo-entrada.jpg',
     },
     sequence: [
-      { type: 'character', id: 'asahi', file: 'asahi.png', position: 'tr' },
+      { type: 'character', id: 'asahi', file: 'asahi.png', position: 'br' },
       { type: 'bubble', target: 'asahi', text: { jp: '...', en: '...' } },
-      { type: 'character', id: 'komori', file: 'komori.png', position: 'bl' },
+      { type: 'character', id: 'komori', file: 'komori.png', position: 'tl' },
       { type: 'bubble', target: 'komori', text: { jp: '...', en: '...' } },
     ],
   },
