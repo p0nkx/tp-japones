@@ -19,6 +19,7 @@ const storyContent = [
     background: { type: 'full', image: 'fondo-entrada.jpg' },
     sequence: [
       { type: 'character', id: 'komori', file: 'komori.png', position: 'right' },
+      { type: 'character', id: 'sombrero', file: 'sombrero.png', position: 'right' },
       { type: 'bubble', target: 'komori', text: { jp: 'こんにちは！はじめまして！', en: '¡Hola! ¡Mucho gusto!' } },
       { type: 'character', id: 'asahi', file: 'asahi.png', position: 'left' },
       { type: 'bubble', target: 'asahi', text: { jp: 'やあ！元気？', en: '¡Hey! ¿Cómo estás?' } },
@@ -29,7 +30,7 @@ const storyContent = [
   // ===== ESCENA 2: Split vertical =====
   {
     id: 'esc_2',
-    background: { type: 'split-v', left: 'clase.jpg', right: 'clase.jpg' },
+    background: { type: 'split-v', left: 'clase.jpg', right: 'clase-vertical.jpg' },
     sequence: [
       { type: 'character', id: 'komori', file: 'komori.png', position: 'left' },
       { type: 'character', id: 'asahi', file: 'asahi.png', position: 'right' },
