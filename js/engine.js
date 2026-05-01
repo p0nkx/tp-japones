@@ -48,9 +48,7 @@
       case 'diagonal':
         layer.classList.add('bg-diagonal');
         layer.classList.add(bg.direction === 'tr-bl' ? 'diag-tr-bl' : 'diag-tl-br');
-        // bg-second = capa inferior (se renderiza primero)
         layer.appendChild(buildBgPanel(bg.bottom, 'bg-second'));
-        // bg-first = capa superior recortada (se renderiza encima)
         layer.appendChild(buildBgPanel(bg.top, 'bg-first'));
         break;
     }
@@ -68,12 +66,14 @@
   function resolveTargets(seq) {
     var charMap = buildCharPositions(seq);
     seq.forEach(function(el) {
-      // Bubble types: bubble, bubble-split, bubble-diag → all map to 'bubble'
-      // Position comes from the target character's position
       if (el.type.indexOf('bubble') === 0 && el.target) {
-        el.bubblePos = charMap[el.target] || 'center';
+        el.bubblePos = el.position || charMap[el.target] || 'center';
       }
     });
+  }
+
+  function buildBubbleContent(text) {
+    return '<div class="bubble-jp">' + text.jp + '</div><div class="bubble-en">' + text.en + '</div>';
   }
 
   function buildElement(item) {
@@ -103,13 +103,11 @@
         el.dataset.charId = item.id || '';
         el.appendChild(createImg(item.file));
         break;
-      // All bubble types → unified 'bubble' class
       case 'bubble':
-      case 'bubble-split':
-      case 'bubble-diag':
         el.classList.add('bubble');
         el.classList.add('pos-' + (item.bubblePos || 'center'));
-        el.innerHTML = '<div class="bubble-jp">' + item.text.jp + '</div><div class="bubble-en">' + item.text.en + '</div>';
+        el.dataset.target = item.target || '';
+        el.innerHTML = buildBubbleContent(item.text);
         break;
       case 'closing-title':
         el.classList.add('el-ctitle');
@@ -129,6 +127,28 @@
         break;
     }
     return el;
+  }
+
+  function resolveBubbleVisibility() {
+    var allBubbles = visualContainer.querySelectorAll('.bubble');
+    var targets = {};
+    for (var i = 0; i < allBubbles.length; i++) {
+      var t = allBubbles[i].dataset.target || '__none__';
+      if (!targets[t]) targets[t] = [];
+      targets[t].push(allBubbles[i]);
+    }
+    for (var key in targets) {
+      var group = targets[key];
+      for (var j = 0; j < group.length; j++) {
+        if (j === group.length - 1) {
+          group[j].classList.remove('bubble-exit');
+          group[j].classList.add('show');
+        } else {
+          group[j].classList.remove('show');
+          group[j].classList.add('bubble-exit');
+        }
+      }
+    }
   }
 
   // ========================================
@@ -212,17 +232,18 @@
       visualContainer.appendChild(elDom);
     });
 
+    resolveBubbleVisibility();
+
     if (!skipTransition && stepIndex > 0) {
       var prevStep = allSteps[stepIndex - 1];
       if (prevStep && prevStep.scene === step.scene) {
-        var newElCount = step.elements.length - prevStep.elements.length;
-        if (newElCount > 0) {
-          var allEls = visualContainer.querySelectorAll('.el');
-          for (var i = allEls.length - newElCount; i < allEls.length; i++) {
-            var el = allEls[i];
-            void el.offsetWidth;
-            el.classList.add('show');
-          }
+        var newItems = step.elements.slice(prevStep.elements.length);
+        var prevTotal = prevStep.elements.length;
+        var allEls = visualContainer.querySelectorAll('.el');
+        for (var i = prevTotal; i < allEls.length; i++) {
+          var el = allEls[i];
+          void el.offsetWidth;
+          el.classList.add('show');
         }
       }
     }
@@ -266,12 +287,15 @@
       elDom.classList.add('show');
     });
 
+    resolveBubbleVisibility();
+
     if (newStepIndex < currentStep) {
       var allEls = visualContainer.querySelectorAll('.el');
       var keepCount = newStep.elements.length;
       for (var i = allEls.length - 1; i >= keepCount; i--) {
         allEls[i].remove();
       }
+      resolveBubbleVisibility();
     }
 
     currentStep = newStepIndex;

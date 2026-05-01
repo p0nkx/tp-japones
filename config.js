@@ -18,14 +18,11 @@ const storyContent = [
     id: 'esc_1',
     background: { type: 'full', image: 'fondo-entrada.jpg' },
     sequence: [
-      { type: 'character', id: 'komori', file: 'komori.png', position: 'tl' },
+      { type: 'character', id: 'komori', file: 'komori.png', position: 'right' },
       { type: 'bubble', target: 'komori', text: { jp: 'こんにちは！はじめまして！', en: '¡Hola! ¡Mucho gusto!' } },
-      { type: 'character', id: 'asahi', file: 'asahi.png', position: 'tr' },
+      { type: 'character', id: 'asahi', file: 'asahi.png', position: 'left' },
       { type: 'bubble', target: 'asahi', text: { jp: 'やあ！元気？', en: '¡Hey! ¿Cómo estás?' } },
-      { type: 'character', id: 'komori1', file: 'komori.png', position: 'bl' },
-      { type: 'bubble', target: 'komori1', text: { jp: 'こんにちは！はじめまして！', en: '¡Hola! ¡Mucho gusto!' } },
-      { type: 'character', id: 'asahi1', file: 'asahi.png', position: 'br' },
-      { type: 'bubble', target: 'asahi1', text: { jp: 'やあ！元気？', en: '¡Hey! ¿Cómo estás?' } },
+      { type: 'bubble', target: 'komori', position: 'center',text: { jp: 'nuevo dialogo', en: 'traduccion' } },
     ],
   },
 
@@ -47,15 +44,13 @@ const storyContent = [
     background: { type: 'split-h', top: 'clase.jpg', bottom: 'clase.jpg' },
     sequence: [
       { type: 'character', id: 'komori', file: 'komori.png', position: 'top-right' },
-      { type: 'bubble', target: 'komori', text: { jp: '...', en: '...' } },
+      { type: 'bubble', target: 'komori', position: 'tr', text: { jp: '...', en: '...' } },
       { type: 'character', id: 'asahi', file: 'asahi.png', position: 'bottom-left' },
-      { type: 'bubble', target: 'asahi', text: { jp: '...', en: '...' } },
+      { type: 'bubble', target: 'asahi', position: 'bl', text: { jp: '...', en: '...' } },
     ],
   },
 
   // ===== ESCENA 4: Diagonal ↘ (0,0 → 100%,100%) =====
-  // bg-top    = imagen del lado superior-derecho (triángulo de arriba)
-  // bg-bottom = imagen del lado inferior-izquierdo (triángulo de abajo)
   {
     id: 'esc_4',
     background: {
@@ -65,10 +60,8 @@ const storyContent = [
       bottom: 'clase.jpg',
     },
     sequence: [
-      // bgBottom visible abajo-izquierda → personaje allí
       { type: 'character', id: 'komori', file: 'komori.png', position: 'tl' },
       { type: 'bubble', target: 'komori', text: { jp: '...', en: '...' } },
-      // bgTop visible arriba-derecha → personaje allí
       { type: 'character', id: 'asahi', file: 'asahi.png', position: 'br' },
       { type: 'bubble', target: 'asahi', text: { jp: '...', en: '...' } },
     ],
@@ -91,21 +84,53 @@ const storyContent = [
     ],
   },
 
+  // ===== ESCENA 6: Demo de posición independiente + reemplazo de burbujas =====
+  {
+    id: 'esc_demo',
+    background: { type: 'full', image: 'fondo-entrada.jpg' },
+    sequence: [
+      // Personaje a la izquierda
+      { type: 'character', id: 'komori', file: 'komori.png', position: 'left' },
+
+      // Burbuja hereda posición de komori (left) automáticamente
+      { type: 'bubble', target: 'komori', text: { jp: 'こんにちは！', en: '¡Hola!' } },
+
+      // Scroll → desaparece la burbuja anterior de komori y aparece esta nueva
+      { type: 'bubble', target: 'komori', text: { jp: 'はじめまして！', en: '¡Mucho gusto!' } },
+
+      // Scroll → desaparece la burbuja anterior de komori y aparece esta con posición distinta
+      { type: 'bubble', target: 'komori', position: 'top-left', text: { jp: 'よろしくお願いします！', en: '¡Encantado!' } },
+
+      // Segundo personaje a la derecha
+      { type: 'character', id: 'asahi', file: 'asahi.png', position: 'right' },
+
+      // Burbuja con posición OBLIGATORIA: asahi está en 'right' pero la burbuja aparece centrada
+      { type: 'bubble', target: 'asahi', position: 'center', text: { jp: 'やあ！', en: '¡Hey!' } },
+
+      // Scroll → desaparece la burbuja anterior de asahi y aparece esta
+      { type: 'bubble', target: 'asahi', text: { jp: '元気ですか？', en: '¿Cómo estás?' } },
+    ],
+  },
+
   // ===== ESCENA PERSONALIZADA: copiar y editar =====
   /*
   {
     id: 'mi_escena',
     background: { type: 'full', image: 'fondo.jpg' },
-    // background: { type: 'split-v', left: 'izq.jpg', right: 'der.jpg' },
-    // background: { type: 'split-h', top: 'arriba.jpg', bottom: 'abajo.jpg' },
-    // background: { type: 'diagonal', direction: 'tl-br', top: 'arriba.jpg', bottom: 'abajo.jpg' },
-    // background: { type: 'diagonal', direction: 'tr-bl', top: 'arriba.jpg', bottom: 'abajo.jpg' },
     sequence: [
-      // Posiciones: left, right, center, top, bottom,
+      // Posiciones de personaje: left, right, center, top, bottom,
       //             top-right, top-left, bottom-right, bottom-left,
       //             tl, tr, bl, br
-      { type: 'character', id: 'komori', file: 'komori.png', position: 'right' },
-      { type: 'bubble', target: 'komori', text: { jp: '...', en: '...' } },
+
+      // La burbuja hereda la posición del personaje por defecto
+      { type: 'character', id: 'komori', file: 'komori.png', position: 'left' },
+      { type: 'bubble', target: 'komori', text: { jp: 'こんにちは！', en: '¡Hola!' } },
+
+      // ...o puedes forzar una posición diferente en la burbuja
+      { type: 'bubble', target: 'komori', position: 'center', text: { jp: 'こんにちは！', en: '¡Hola!' } },
+
+      // Al definir una nueva burbuja para el mismo target, la anterior desaparece
+      { type: 'bubble', target: 'komori', text: { jp: 'はじめまして！', en: '¡Mucho gusto!' } },
     ],
   },
   */
