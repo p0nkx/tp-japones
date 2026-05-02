@@ -52,6 +52,9 @@
         layer.appendChild(buildBgPanel(bg.top, 'bg-first'));
         break;
     }
+    if (bg.nightmare) {
+      layer.classList.add('bg-nightmare');
+    }
     return layer;
   }
 
@@ -105,13 +108,21 @@
       case 'character':
         el.classList.add('char', 'pos-' + item.position);
         el.dataset.charId = item.id || '';
+        if (item.silhouette) {
+          el.classList.add('char-silhouette');
+        }
         el.appendChild(createImg(item.file));
         break;
       case 'bubble':
         el.classList.add('bubble');
         el.classList.add('pos-' + (item.bubblePos || 'center'));
         el.dataset.target = item.target || '';
-        el.innerHTML = buildBubbleContent(item.text);
+        if (item.tremble) {
+          el.classList.add('bubble-tremble');
+          el.innerHTML = '<div class="bubble-tremble-inner">' + buildBubbleContent(item.text) + '</div>';
+        } else {
+          el.innerHTML = buildBubbleContent(item.text);
+        }
         break;
       case 'closing-title':
         el.classList.add('el-ctitle');

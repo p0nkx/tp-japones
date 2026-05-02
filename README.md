@@ -316,6 +316,38 @@ Si retrocedes con scroll, las burbujas anteriores reaparecen en orden inverso.
 
 ---
 
+## 🌙 Efectos Especiales
+
+### 1. Pesadilla (fondo oscuro borroso)
+
+Aplica `grayscale(100%) brightness(40%) blur(2px)` al fondo de la escena. Crea una atmósfera de pesadilla.
+
+```javascript
+background: { type: 'full', image: 'clase.jpg', nightmare: true }
+```
+
+Funciona con todos los tipos de fondo (`full`, `split-v`, `split-h`, `diagonal`).
+
+### 2. Silueta (personaje completamente negro)
+
+Convierte al personaje en una silueta oscura. Ideal para escenas de misterio o miedo.
+
+```javascript
+{ type: 'character', id: 'komori', file: 'komori.png', position: 'left', silhouette: true }
+```
+
+### 3. Burbuja Temblorosa (voz temblorosa/miedo)
+
+La burbuja tiembla continuamente, dando la sensación de que el personaje habla con miedo o nervios.
+
+```javascript
+{ type: 'bubble', target: 'komori', tremble: true, text: { jp: '怖い...', en: 'Tengo miedo...' } }
+```
+
+> **Combinación de efectos**: Puedes usar `nightmare: true` en el fondo + `silhouette: true` en personajes + `tremble: true` en burbujas para crear una escena de terror completa.
+
+---
+
 ## 🛠 Abrir el Proyecto
 
 - **Simple**: doble click en `index.html`

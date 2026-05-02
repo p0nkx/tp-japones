@@ -133,6 +133,46 @@ html, body {
 }
 
 /* ========================================
+   NIGHTMARE BACKGROUND EFFECT
+   ======================================== */
+.bg-nightmare {
+    filter: grayscale(100%) brightness(40%) blur(2px);
+    transition: filter 0.6s ease;
+}
+
+/* ========================================
+   CHARACTER SILHOUETTE
+   ======================================== */
+.char-silhouette .char-img {
+    filter: brightness(0) contrast(1.2) drop-shadow(0 0 8px rgba(0,0,0,0.8));
+}
+
+/* ========================================
+   TREMBLE BUBBLE (fear/shaking voice)
+   ======================================== */
+@keyframes bubble-tremble {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    10% { transform: translate(-2px, -1px) rotate(-0.5deg); }
+    20% { transform: translate(2px, 1px) rotate(0.5deg); }
+    30% { transform: translate(-1px, 2px) rotate(-0.3deg); }
+    40% { transform: translate(1px, -1px) rotate(0.4deg); }
+    50% { transform: translate(-2px, 1px) rotate(-0.5deg); }
+    60% { transform: translate(2px, -1px) rotate(0.3deg); }
+    70% { transform: translate(-1px, -2px) rotate(-0.4deg); }
+    80% { transform: translate(1px, 2px) rotate(0.5deg); }
+    90% { transform: translate(-1px, -1px) rotate(-0.3deg); }
+}
+
+.bubble-tremble {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.bubble-tremble-inner {
+    animation: bubble-tremble 0.25s ease-in-out infinite;
+    display: inline-block;
+}
+
+/* ========================================
    FRAME - marco del fondo
    ======================================== */
 .scene-frame {
@@ -181,15 +221,16 @@ html, body {
 .scene-visual.layout-center .el-clogo {
     width: 50vh;
     height: 50vh;
+    
    
 }
 
 .scene-visual.layout-center .el-title {
-    font-size: clamp(26px, 5vw, 54px);
+    font-size: clamp(26px, 2.5vw, 54px);
     color: #fff;
     text-shadow: 0 0 18px rgba(255,107,157,0.4), 0 2px 5px rgba(0,0,0,0.3);
     letter-spacing: 2px;
-    margin-bottom: 0.5rem;
+    
 }
 
 .scene-visual.layout-center .el-subtitle {

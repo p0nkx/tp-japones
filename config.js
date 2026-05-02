@@ -1,20 +1,32 @@
 const storyContent = [
 
   // ===== PORTADA =====
+  /*
   {
     id: 'welcome',
     isWelcome: true,
     background: { type: 'full', color: 'linear-gradient(180deg, #652381, #3d1450, #1a1a2e)' },
     elements: [
       { type: 'logo', file: 'logo.png' },
-      { type: 'title', text: '会話 - Role Play' },
-      { type: 'subtitle', text: 'Trabajo Práctico Final' },
+      { type: 'title', text: 'Trabajo Práctico' },
+      { type: 'title', text: '- Role Play -' },
+      { type: 'subtitle', text: 'Final Nivel 3 ' },
       { type: 'names', text: 'LUNA FABIAN' },
       { type: 'scroll-hint', text: 'SCROLL ↓' },
     ],
   },
-/*
+*/
   // ===== ESCENA 1: Full image =====
+{
+    id: 'esc_1',
+    background: { type: 'full', image: 'clase.jpg' },
+    sequence: [
+      { type: 'character', id: 'komori', file: 'komori_asustada.png', position: 'center' },
+      { type: 'character', id: 'sombrero', file: 'sombrero.png', position: 'right' },
+      
+    ],
+  },
+  /*
   {
     id: 'esc_1',
     background: { type: 'full', image: 'fondo-entrada.jpg' },
@@ -26,7 +38,7 @@ const storyContent = [
       { type: 'bubble', target: 'asahi', text: { jp: 'やあ！元気？', en: '¡Hey! ¿Cómo estás?' } },
       { type: 'bubble', target: 'komori', position: 'center',text: { jp: 'nuevo dialogo', en: 'traduccion' } },
     ],
-  },
+  },*/
 
   // ===== ESCENA 2: Split vertical =====
   {
@@ -51,7 +63,7 @@ const storyContent = [
       { type: 'bubble', target: 'asahi', position: 'bl', text: { jp: '...', en: '...' } },
     ],
   },
-
+/*
   // ===== ESCENA 4: Diagonal ↘ (0,0 → 100%,100%) =====
   {
     id: 'esc_4',
@@ -114,22 +126,51 @@ const storyContent = [
     ],
   },
 
+  // ===== ESCENA 7: Demo de efectos (pesadilla, temblor, silueta) =====
+  {
+    id: 'esc_nightmare',
+    background: { type: 'full', image: 'clase.jpg', nightmare: true },
+    sequence: [
+      // Personaje como silueta negra
+      { type: 'character', id: 'komori', file: 'komori.png', position: 'left', silhouette: true },
+
+      // Burbuja temblando (miedo/voz temblorosa)
+      { type: 'bubble', target: 'komori', tremble: true, text: { jp: '誰...？', en: '¿Quién...?' } },
+
+      // Segunda burbuja temblorosa
+      { type: 'bubble', target: 'komori', tremble: true, text: { jp: '怖い...', en: 'Tengo miedo...' } },
+
+      // Segundo personaje también como silueta
+      { type: 'character', id: 'asahi', file: 'asahi.png', position: 'right', silhouette: true },
+
+      // Burbuja temblorosa de asahi
+      { type: 'bubble', target: 'asahi', tremble: true, text: { jp: '逃げよう...', en: 'Huyamos...' } },
+    ],
+  },
+
   // ===== ESCENA PERSONALIZADA: copiar y editar =====
   /*
   {
     id: 'mi_escena',
     background: { type: 'full', image: 'fondo.jpg' },
+    // background: { type: 'full', image: 'fondo.jpg', nightmare: true },  ← efecto pesadilla
+
     sequence: [
       // Posiciones de personaje: left, right, center, top, bottom,
       //             top-right, top-left, bottom-right, bottom-left,
       //             tl, tr, bl, br
 
-      // La burbuja hereda la posición del personaje por defecto
+      // Personaje normal
       { type: 'character', id: 'komori', file: 'komori.png', position: 'left' },
+
+      // Personaje como silueta negra (efecto sombra)
+      { type: 'character', id: 'komori', file: 'komori.png', position: 'left', silhouette: true },
+
+      // Burbuja normal
       { type: 'bubble', target: 'komori', text: { jp: 'こんにちは！', en: '¡Hola!' } },
 
-      // ...o puedes forzar una posición diferente en la burbuja
-      { type: 'bubble', target: 'komori', position: 'center', text: { jp: 'こんにちは！', en: '¡Hola!' } },
+      // Burbuja temblando (miedo/voz temblorosa)
+      { type: 'bubble', target: 'komori', tremble: true, text: { jp: '怖い...', en: 'Tengo miedo...' } },
 
       // Al definir una nueva burbuja para el mismo target, la anterior desaparece
       { type: 'bubble', target: 'komori', text: { jp: 'はじめまして！', en: '¡Mucho gusto!' } },
@@ -145,7 +186,7 @@ const storyContent = [
       { type: 'closing-logo', file: 'logo.png' },
       { type: 'closing-title', text: '終わり' },
       { type: 'closing-sub', text: 'Fin' },
-      { type: 'closing-names', text: 'LUNA FABIAN' },
+      //{ type: 'closing-names', text: 'LUNA FABIAN' },
       
     ],
   },
