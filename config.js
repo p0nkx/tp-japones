@@ -13,7 +13,7 @@ const storyContent = [
       { type: 'scroll-hint', text: 'SCROLL ↓' },
     ],
   },
-
+/*
   // ===== ESCENA 1: Full image =====
   {
     id: 'esc_1',
@@ -146,7 +146,7 @@ const storyContent = [
       { type: 'closing-title', text: '終わり' },
       { type: 'closing-sub', text: 'Fin' },
       { type: 'closing-names', text: 'LUNA FABIAN' },
-      { type: 'closing-footer', text: 'TP Nivel 3 de', logo: 'logo.png' },
+      
     ],
   },
 

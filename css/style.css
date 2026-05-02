@@ -179,8 +179,9 @@ html, body {
 
 .scene-visual.layout-center .el-logo,
 .scene-visual.layout-center .el-clogo {
-    width: clamp(120px, 22vw, 220px);
-    margin-bottom: 1.5rem;
+    width: 50vh;
+    height: 50vh;
+   
 }
 
 .scene-visual.layout-center .el-title {
