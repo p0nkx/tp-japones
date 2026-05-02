@@ -305,6 +305,7 @@ html, body {
 .el.always-on { opacity: 1 !important; }
 .el-exit { opacity: 0 !important; pointer-events: none; }
 .bubble-hidden { display: none !important; }
+.char-hidden { display: none !important; }
 
 /* ========================================
    CHARACTERS
@@ -385,11 +386,52 @@ html, body {
     justify-content: center;
 }
 
+/*para rina camuflada*/
+.char.pos-camuflada {
+    top: 60%; left: 10%;
+    width: 50%; height: 10%;
+    justify-content: flex-end;
+    padding-right: 2%;
+}
+
+
 .char-img {
     height: 100%;
     object-fit: contain;
     filter: drop-shadow(0 2px 10px rgba(0,0,0,0.4));
 }
+
+/*/para la despedida, ubicaciones especiales/*/
+
+/*para rina final*/
+.char.pos-center-left {
+    top: 38%; left: 10%;
+    width: 36%; height: 45%;
+    justify-content: flex-end;
+    padding-right: 2%;
+}
+/*para nicorasu final*/
+.char.pos-center-left-left {
+    top: 25%; left: 10%;
+    width: 28%; height: 56%;
+    justify-content: flex-end;
+    padding-right: 2%;
+}
+/*para asahi final*/
+.char.pos-center-right {
+    top: 45%; right: 22%;
+    width: 50%; height: 55%;
+    justify-content: flex-end;
+    padding-right: 2%;
+}
+/*para camero final*/
+.char.pos-center-right-right {
+    top: 42%; right: 8%;
+    width: 50%; height: 60%;
+    justify-content: flex-end;
+    padding-right: 2%;
+}
+
 
 /* ========================================
    BUBBLES - posicionadas desde el personaje hacia el centro
@@ -449,6 +491,42 @@ html, body {
 .bubble.pos-center {
     left: 50%;
     top: 5%;
+    transform: translateX(-50%);
+}
+.bubble.pos-center::after {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 11px solid var(--bubble-bg);
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* narration → exactamente en el centro del contenedor, sin cola */
+.bubble.pos-narration {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 55%;
+    padding: 18px 28px;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.92);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.bubble.pos-narration::after {
+    display: none;
+}
+.bubble.pos-narration .bubble-jp {
+    font-size: clamp(16px, 3.2vw, 28px);
+}
+.bubble.pos-narration .bubble-en {
+    font-size: clamp(11px, 1.8vw, 14px);
+}
+/* centro pantalla */
+.bubble.pos-center-medio {
+    left: 50%;
+    top: 10%;
+    transform: translateX(-50%);    
     transform: translateX(-50%);
 }
 .bubble.pos-center::after {
@@ -557,6 +635,48 @@ html, body {
     right: 15px;
 }
 
+/*posicion para la escena 8 en karaoke de asahi*/
+.bubble.pos-center-right {
+    right: 15%;
+    top: 10%;
+}
+.bubble.pos-center-right::after {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 11px solid var(--bubble-bg);
+    
+    bottom: -10px;
+    right: 180px;
+}
+
+/*posicion para la escena 8 en karaoke de nikorasu*/
+.bubble.pos-tl-n {
+    left: 20%;
+    top: 1%;
+}
+.bubble.pos-tl-n::after {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 11px solid var(--bubble-bg);
+    
+    bottom: -10px;
+    left: 80px;
+}
+
+/*posicion para la escena 8 en karaoke de rina*/
+.bubble.pos-rina {
+    left: 30%;
+    top: 10%;
+}
+.bubble.pos-rina::after {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 11px solid var(--bubble-bg);
+    
+    bottom: -10px;
+    left: 80px;
+}
+
 /* tr → 8% derecha, 5% arriba, junto al personaje → centro */
 .bubble.pos-tr {
     right: 20%;
@@ -585,6 +705,20 @@ html, body {
     top: 10px;
     left: -10px;
 }
+/*dialogo camero corriendo por detras*/
+.bubble.pos-bl-l {
+    left: 15%;
+    bottom: 40%;
+}
+.bubble.pos-bl-l::after {
+    border-top: none;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 11px solid var(--bubble-bg);
+    
+    bottom: 5px;
+    left: -5px;
+}
 
 /* br → 8% derecha, 5% abajo, junto al personaje → centro */
 .bubble.pos-br {
@@ -612,6 +746,15 @@ html, body {
     font-size: clamp(9px, 1.5vw, 12px);
     color: #666;
     font-style: italic;
+}
+
+.bubble-es {
+    font-size: clamp(9px, 1.5vw, 12px);
+    color: #999;
+    font-style: normal;
+    border-top: 1px solid #eee;
+    padding-top: 4px;
+    margin-top: 4px;
 }
 
 /* ========================================
@@ -824,6 +967,32 @@ html, body {
     0%   { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 0.55; }
     50%  { opacity: 0.35; }
     100% { transform: translateY(110vh) rotate(720deg) translateX(80px); opacity: 0; }
+}
+
+/* ========================================
+   LANGUAGE TOGGLE BUTTON
+   ======================================== */
+#lang-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 10000;
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.85);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: background 0.2s, color 0.2s;
+    letter-spacing: 1px;
+}
+
+#lang-toggle:hover {
+    background: rgba(255,255,255,0.25);
+    color: #fff;
 }
 
 /* ========================================

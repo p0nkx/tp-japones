@@ -69,14 +69,43 @@
   function resolveTargets(seq) {
     var charMap = buildCharPositions(seq);
     seq.forEach(function(el) {
-      if (el.type.indexOf('bubble') === 0 && el.target) {
-        el.bubblePos = el.position || charMap[el.target] || 'center';
+      if (el.type.indexOf('bubble') === 0) {
+        if (el.position) {
+          el.bubblePos = el.position;
+        } else if (el.target) {
+          el.bubblePos = charMap[el.target] || 'center';
+        } else {
+          el.bubblePos = 'narration';
+        }
       }
     });
   }
 
   function buildBubbleContent(text) {
-    return '<div class="bubble-jp">' + text.jp + '</div><div class="bubble-en">' + text.en + '</div>';
+    var mode = window.__bubbleMode || 2;
+    var jp = text.jp || '';
+    var en = text.en || '';
+    var es = text.es || '';
+    var html = '<div class="bubble-jp">' + jp + '</div>';
+    if (mode === 2 || mode === 4) {
+      if (en) html += '<div class="bubble-en">' + en + '</div>';
+    }
+    if (mode === 3 || mode === 4) {
+      if (es) html += '<div class="bubble-es">' + es + '</div>';
+    }
+    return html;
+  }
+
+  function rebuildAllBubbles() {
+    var bubbles = document.querySelectorAll('.bubble[data-text-json]');
+    bubbles.forEach(function(bubble) {
+      var text = JSON.parse(bubble.dataset.textJson);
+      if (bubble.classList.contains('bubble-tremble')) {
+        bubble.innerHTML = '<div class="bubble-tremble-inner">' + buildBubbleContent(text) + '</div>';
+      } else {
+        bubble.innerHTML = buildBubbleContent(text);
+      }
+    });
   }
 
   function buildElement(item) {
@@ -106,12 +135,17 @@
         el.textContent = item.text;
         break;
       case 'character':
-        el.classList.add('char', 'pos-' + item.position);
-        el.dataset.charId = item.id || '';
-        if (item.silhouette) {
-          el.classList.add('char-silhouette');
+        if (item.hidden) {
+          el.classList.add('char-hidden');
+          el.dataset.charId = item.id || '';
+        } else {
+          el.classList.add('char', 'pos-' + item.position);
+          el.dataset.charId = item.id || '';
+          if (item.silhouette) {
+            el.classList.add('char-silhouette');
+          }
+          el.appendChild(createImg(item.file));
         }
-        el.appendChild(createImg(item.file));
         break;
       case 'bubble':
         el.classList.add('bubble');
@@ -121,8 +155,22 @@
           el.classList.add('bubble-hidden');
         }
         if (item.tremble && !item.hidden) {
+          el.classList.add('bubble-tremble');
+        }
+        el.dataset.textJson = JSON.stringify(item.text);
+        if (item.tremble && !item.hidden) {
           el.innerHTML = '<div class="bubble-tremble-inner">' + buildBubbleContent(item.text) + '</div>';
         } else if (!item.hidden) {
+          el.innerHTML = buildBubbleContent(item.text);
+        }
+        break;
+      case 'narration':
+        el.classList.add('bubble', 'pos-narration');
+        el.dataset.target = '__narration__';
+        if (item.hidden) {
+          el.classList.add('bubble-hidden');
+        } else {
+          el.dataset.textJson = JSON.stringify(item.text);
           el.innerHTML = buildBubbleContent(item.text);
         }
         break;
@@ -174,7 +222,7 @@
       }
     }
 
-    var allChars = visualContainer.querySelectorAll('.char');
+    var allChars = visualContainer.querySelectorAll('.char, .char-hidden');
     var charsById = {};
     for (var k = 0; k < allChars.length; k++) {
       var c = allChars[k].dataset.charId || '__none__';
@@ -184,7 +232,10 @@
     for (var key2 in charsById) {
       var group2 = charsById[key2];
       for (var m = 0; m < group2.length; m++) {
-        if (m === group2.length - 1) {
+        if (group2[m].classList.contains('char-hidden')) {
+          group2[m].classList.remove('show');
+          group2[m].classList.add('el-exit');
+        } else if (m === group2.length - 1) {
           group2[m].classList.remove('el-exit');
           group2[m].classList.add('show');
         } else {
@@ -253,6 +304,25 @@
     bgContainer.appendChild(visualContainer);
     screenEl.appendChild(bgContainer);
     app.appendChild(screenEl);
+
+    // Toggle button
+    var btn = document.createElement('button');
+    btn.id = 'lang-toggle';
+    btn.textContent = 'JP+EN';
+    btn.addEventListener('click', function() {
+      window.__bubbleMode = (window.__bubbleMode || 2) % 4 + 1;
+      updateToggleLabel();
+      rebuildAllBubbles();
+    });
+    document.body.appendChild(btn);
+    updateToggleLabel();
+  }
+
+  var modeLabels = ['', 'JP', 'JP+EN', 'JP+ES', 'JP+EN+ES'];
+
+  function updateToggleLabel() {
+    var btn = document.getElementById('lang-toggle');
+    if (btn) btn.textContent = modeLabels[window.__bubbleMode || 2];
   }
 
   // ========================================

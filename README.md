@@ -15,10 +15,7 @@ japanese-roleplay/
 ├── css/
 │   └── style.css       ← Estilos visuales (opcional)
 ├── images/             ← Aquí van personajes y fondos
-│   ├── komori.png
-│   ├── asahi.png
-│   ├── fondo-entrada.jpg
-│   └── clase.jpg
+│   └── ...
 └── README.md
 ```
 
@@ -38,10 +35,18 @@ japanese-roleplay/
 - Al cambiar de escena: overlay negro → se carga todo el contenido → fade-out del negro
 - **Welcome y Closing**: muestran todos sus elementos de una vez (no tienen pasos secuenciales)
 
-### Burbujas de Diálogo
+### Reemplazo de Elementos
 - Al definir una **nueva burbuja** para un personaje que ya tiene una visible, la anterior se oculta con fade-out
-- Al retroceder con scroll, la burbuja anterior reaparece con fade-in
-- La burbuja **hereda la posición del personaje** por defecto, pero puedes forzar una posición distinta
+- Al definir un **nuevo personaje** con el mismo `id`, el anterior desaparece con fade-out
+- Al retroceder con scroll, los elementos anteriores reaparecen con fade-in
+
+### Botón de Idioma (siempre visible, esquina superior derecha)
+| Click | Modo | Muestra |
+|-------|------|---------|
+| 1 | JP | Solo japonés (jp) |
+| 2 | JP+EN | Japonés + inglés (jp + en) |
+| 3 | JP+ES | Japonés + español (jp + es) |
+| 4 | JP+EN+ES | Los tres textos |
 
 ---
 
@@ -66,14 +71,12 @@ background: { type: 'full', color: 'linear-gradient(180deg, #1a1a2e, #0f3460)' }
 
 ### 2. Split Vertical (izquierda / derecha)
 
-Divide el fondo con una línea vertical central:
 ```javascript
 background: { type: 'split-v', left: 'clase.jpg', right: 'fondo.jpg' }
 ```
 
 ### 3. Split Horizontal (arriba / abajo)
 
-Divide el fondo con una línea horizontal central:
 ```javascript
 background: { type: 'split-h', top: 'clase.jpg', bottom: 'fondo.jpg' }
 ```
@@ -84,9 +87,9 @@ Corte diagonal de (0,0) a (100%,100%):
 ```javascript
 background: {
   type: 'diagonal',
-  direction: 'tl-br',   // tl-br = esquina ↘
-  top: 'clase.jpg',     // triángulo superior-derecho
-  bottom: 'fondo.jpg',  // triángulo inferior-izquierdo
+  direction: 'tl-br',
+  top: 'clase.jpg',
+  bottom: 'fondo.jpg',
 }
 ```
 
@@ -96,13 +99,20 @@ Corte diagonal de (100%,0) a (0,100%):
 ```javascript
 background: {
   type: 'diagonal',
-  direction: 'tr-bl',   // tr-bl = esquina ↙
-  top: 'clase.jpg',     // triángulo superior-izquierdo
-  bottom: 'fondo.jpg',  // triángulo inferior-derecho
+  direction: 'tr-bl',
+  top: 'clase.jpg',
+  bottom: 'fondo.jpg',
 }
 ```
 
-> **Nota**: Las imágenes se ponen en la carpeta `images/` y se referencian solo por nombre: `'mifondo.jpg'`
+### Propiedad `nightmare`
+
+Aplica `grayscale(100%) brightness(40%) blur(2px)` al fondo:
+```javascript
+background: { type: 'full', image: 'clase.jpg', nightmare: true }
+```
+
+> **Nota**: Las imágenes se ponen en la carpeta `images/` y se referencian solo por nombre.
 
 ---
 
@@ -118,8 +128,10 @@ background: {
 | `id` | Identificador único. Se usa en las burbujas con `target` |
 | `file` | Archivo PNG en `images/` |
 | `position` | Posición en la escena (ver tabla abajo) |
+| `silhouette` | **Opcional**: `true` convierte al personaje en silueta negra |
+| `hidden` | **Opcional**: `true` oculta el personaje sin renderizar uno nuevo |
 
-### Posiciones Disponibles
+### Posiciones Disponibles para Personajes
 
 | Valor | Visual | Cuándo usar |
 |-------|--------|-------------|
@@ -137,8 +149,6 @@ background: {
 | `bl` | Dentro del triángulo inferior-izq | Diagonal |
 | `br` | Dentro del triángulo inferior-der | Diagonal |
 
-> **Importante**: El `id` debe ser único por personaje dentro de una escena. Es la referencia para posicionar las burbujas.
-
 ---
 
 ## 💬 Burbujas de Diálogo
@@ -149,20 +159,27 @@ background: {
 { type: 'bubble', target: 'komori', text: { jp: 'こんにちは！', en: '¡Hola!' } }
 ```
 
+### Estructura del Texto (3 idiomas)
+
+```javascript
+text: {
+  jp: 'ここ は どこ です か。',      // Japonés (siempre visible en algún modo)
+  en: 'Koko wa doko desu ka.',       // Inglés (romanji u otro idioma)
+  es: '¿Dónde estoy?'                // Español (traducción)
+}
+```
+
+Todos los campos son opcionales. El botón superior derecho alterna qué campos se muestran.
+
+### Campos de la Burbuja
+
 | Campo | Descripción |
 |-------|-------------|
 | `type` | Siempre `'bubble'` |
 | `target` | El `id` del personaje al que pertenece |
-| `text.jp` | Texto en japonés |
-| `text.en` | Texto en español (u otro idioma) |
 | `position` | **Opcional**: fuerza una posición diferente |
-
-### Burbuja con Posición Forzada
-
-```javascript
-// Aunque komori está en 'left', la burbuja aparece centrada arriba
-{ type: 'bubble', target: 'komori', position: 'center', text: { jp: 'こんにちは！', en: '¡Hola!' } }
-```
+| `tremble` | **Opcional**: `true` hace que la burbuja tiemble (miedo) |
+| `hidden` | **Opcional**: `true` oculta la burbuja sin mostrar nada nuevo |
 
 ### Posiciones Disponibles para Burbujas
 
@@ -179,22 +196,20 @@ background: {
 | `tl-l` | 15% izq, 10% arriba | Variante para escena dormitorio |
 | `tr` | 20% der, 5% arriba | Esquina superior-derecha |
 | `bl` | 20% izq, 15% abajo | Esquina inferior-izquierda |
+| `bl-l` | 15% izq, 40% abajo | Variante para camero corriendo |
 | `br` | 20% der, 15% abajo | Esquina inferior-derecha |
+| `narration` | Exactamente centrado | Narración/introducción (sin cola) |
 
-### Burbuja Oculta (hidden)
+### Narración Centrada
 
-Para esconder una burbuja existente sin que aparezca nada nuevo. Útil para "cerrar" diálogos.
+Burbuja centrada exactamente en el medio del contenedor, sin personaje. Ideal para introducciones.
 
 ```javascript
-// La burbuja anterior de komori desaparece con fade-out
-{ type: 'bubble', target: 'komori', hidden: true },
+{ type: 'narration', text: { jp: 'ある日の朝...', en: 'Una mañana...', es: 'Una mañana...' } },
+{ type: 'narration', hidden: true },  // oculta la narración
 ```
 
-| Campo | Descripción |
-|-------|-------------|
-| `hidden` | `true` → la burbuja no se renderiza, solo oculta la anterior |
-
-### Cómo Funciona el Reemplazo de Burbujas
+### Reemplazo de Burbujas
 
 ```javascript
 // Paso 1: Aparece la primera burbuja de komori
@@ -203,11 +218,9 @@ Para esconder una burbuja existente sin que aparezca nada nuevo. Útil para "cer
 // Paso 2: Aparece segunda burbuja → la primera desaparece con fade-out
 { type: 'bubble', target: 'komori', text: { jp: 'はじめまして！', en: '¡Mucho gusto!' } },
 
-// Paso 3: Tercera burbuja con posición distinta → la segunda desaparece
-{ type: 'bubble', target: 'komori', position: 'top-left', text: { jp: 'よろしく！', en: '¡Encantado!' } },
+// Paso 3: Ocultar todas las burbujas de komori (sin mostrar nada nuevo)
+{ type: 'bubble', target: 'komori', hidden: true },
 ```
-
-Si retrocedes con scroll, las burbujas anteriores reaparecen en orden inverso.
 
 ---
 
@@ -215,29 +228,26 @@ Si retrocedes con scroll, las burbujas anteriores reaparecen en orden inverso.
 
 ```javascript
 {
-  id: 'mi_escena',                              // ID único (sin espacios)
-  background: {
-    type: 'full',                               // 'full' | 'split-v' | 'split-h' | 'diagonal'
-    image: 'fondo-entrada.jpg',                 // Para 'full'
-    // Para split-v: left: 'izq.jpg', right: 'der.jpg'
-    // Para split-h: top: 'arriba.jpg', bottom: 'abajo.jpg'
-    // Para diagonal: type: 'diagonal', direction: 'tl-br', top: 'arriba.jpg', bottom: 'abajo.jpg'
-  },
+  id: 'mi_escena',
+  background: { type: 'full', image: 'fondo.jpg' },
   sequence: [
     // Paso 1: Aparece personaje
     { type: 'character', id: 'komori', file: 'komori.png', position: 'right' },
 
-    // Paso 2: Aparece su burbuja
+    // Paso 2: Aparece su burbuja (hereda posición 'right')
     { type: 'bubble', target: 'komori', text: { jp: 'こんにちは！', en: '¡Hola!' } },
 
-    // Paso 3: Aparece segundo personaje
+    // Paso 3: Segundo personaje
     { type: 'character', id: 'asahi', file: 'asahi.png', position: 'left' },
 
-    // Paso 4: Aparece su burbuja (hereda 'left' de asahi)
+    // Paso 4: Burbuja de asahi (hereda posición 'left')
     { type: 'bubble', target: 'asahi', text: { jp: 'やあ！', en: '¡Hey!' } },
 
-    // Paso 5: Primera burbuja de komori desaparece, aparece esta nueva
+    // Paso 5: Nueva burbuja de komori (la anterior desaparece)
     { type: 'bubble', target: 'komori', text: { jp: '元気？', en: '¿Cómo estás?' } },
+
+    // Paso 6: Ocultar burbuja de komori
+    { type: 'bubble', target: 'komori', hidden: true },
   ],
 }
 ```
@@ -251,12 +261,13 @@ Si retrocedes con scroll, las burbujas anteriores reaparecen en orden inverso.
 ```javascript
 {
   id: 'welcome',
-  isWelcome: true,                              // Marca como portada (muestra todo de una vez)
+  isWelcome: true,
   background: { type: 'full', color: 'linear-gradient(180deg, #1a1a2e, #16213e, #0f3460)' },
   elements: [
+    { type: 'logo', file: 'logo.png' },
     { type: 'title', text: '会話 - Role Play' },
     { type: 'subtitle', text: 'Trabajo Práctico Final' },
-    { type: 'names', text: 'Tu Nombre & Tu Compañero' },
+    { type: 'names', text: 'LUNA FABIAN' },
     { type: 'scroll-hint', text: 'SCROLL ↓' },
   ],
 }
@@ -269,15 +280,41 @@ Si retrocedes con scroll, las burbujas anteriores reaparecen en orden inverso.
 ```javascript
 {
   id: 'closing',
-  background: { type: 'full', color: 'linear-gradient(180deg, #FF6B6B, #4A0E4E, #1a1a2e)' },
+  background: { type: 'full', color: 'linear-gradient(180deg, #652381, #3d1450, #1a1a2e)' },
   elements: [
+    { type: 'closing-logo', file: 'logo.png' },
     { type: 'closing-title', text: '終わり' },
     { type: 'closing-sub', text: 'Fin' },
-    { type: 'closing-names', text: 'Tu Nombre & Tu Compañero' },
-    { type: 'closing-class', text: 'Clase de Japonés - 2025' },
+    { type: 'closing-names', text: 'LUNA FABIAN' },
+    { type: 'closing-footer', text: 'TP Nivel 3 de', logo: 'logo.png' },
   ],
 }
 ```
+
+---
+
+## 🌙 Efectos Especiales
+
+### 1. Pesadilla (fondo oscuro borroso)
+
+```javascript
+background: { type: 'full', image: 'clase.jpg', nightmare: true }
+```
+Funciona con todos los tipos de fondo (`full`, `split-v`, `split-h`, `diagonal`).
+
+### 2. Silueta (personaje completamente negro)
+
+```javascript
+{ type: 'character', id: 'komori', file: 'komori.png', position: 'left', silhouette: true }
+```
+
+### 3. Burbuja Temblorosa (voz temblorosa/miedo)
+
+```javascript
+{ type: 'bubble', target: 'komori', tremble: true, text: { jp: '怖い...', en: 'Tengo miedo...' } }
+```
+
+> **Combinación**: `nightmare: true` + `silhouette: true` + `tremble: true` = escena de terror completa.
 
 ---
 
@@ -287,34 +324,22 @@ Si retrocedes con scroll, las burbujas anteriores reaparecen en orden inverso.
 2. **Edita `config.js`** — copia un bloque de escena existente y pégalo antes del `closing`
 3. **Cambia** el `id`, el `background` y la `sequence` con tus datos
 
-```javascript
-// Copia este bloque y pégalo antes del closing:
-{
-  id: 'mi_nueva_escena',
-  background: { type: 'full', image: 'mi-fondo.jpg' },
-  sequence: [
-    { type: 'character', id: 'personaje1', file: 'mi-personaje.png', position: 'left' },
-    { type: 'bubble', target: 'personaje1', text: { jp: 'こんにちは！', en: '¡Hola!' } },
-  ],
-},
-```
-
 ---
 
 ## 🎮 Control de Scroll
 
 - **Avanzar**: scroll hacia abajo, flecha ↓, o barra espaciadora
 - **Retroceder**: scroll hacia arriba o flecha ↑
-- Cada paso tiene un cooldown de 500ms para evitar saltos accidentales
-- Entre escenas hay un overlay negro de 300ms como transición
+- Cooldown de 500ms entre pasos
+- Overlay negro de 300ms entre escenas
 
 ---
 
 ## 📱 Responsive
 
 - **Desktop**: ancho del frame al 88%
-- **Tablet (≤768px)**: 93% de ancho, burbujas más grandes
-- **Móvil (≤480px)**: 95% de ancho, burbujas al 70% del ancho
+- **Tablet (≤768px)**: 93% de ancho
+- **Móvil (≤480px)**: 95% de ancho
 
 ---
 
@@ -327,38 +352,6 @@ Si retrocedes con scroll, las burbujas anteriores reaparecen en orden inverso.
 5. **La portada** usa `isWelcome: true` y `elements` (no `sequence`)
 6. **El cierre** usa `id: 'closing'` (no cambiar)
 7. **Las imágenes** van en `images/` y se referencian solo por nombre
-
----
-
-## 🌙 Efectos Especiales
-
-### 1. Pesadilla (fondo oscuro borroso)
-
-Aplica `grayscale(100%) brightness(40%) blur(2px)` al fondo de la escena. Crea una atmósfera de pesadilla.
-
-```javascript
-background: { type: 'full', image: 'clase.jpg', nightmare: true }
-```
-
-Funciona con todos los tipos de fondo (`full`, `split-v`, `split-h`, `diagonal`).
-
-### 2. Silueta (personaje completamente negro)
-
-Convierte al personaje en una silueta oscura. Ideal para escenas de misterio o miedo.
-
-```javascript
-{ type: 'character', id: 'komori', file: 'komori.png', position: 'left', silhouette: true }
-```
-
-### 3. Burbuja Temblorosa (voz temblorosa/miedo)
-
-La burbuja tiembla continuamente, dando la sensación de que el personaje habla con miedo o nervios.
-
-```javascript
-{ type: 'bubble', target: 'komori', tremble: true, text: { jp: '怖い...', en: 'Tengo miedo...' } }
-```
-
-> **Combinación de efectos**: Puedes usar `nightmare: true` en el fondo + `silhouette: true` en personajes + `tremble: true` en burbujas para crear una escena de terror completa.
 
 ---
 
