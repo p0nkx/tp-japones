@@ -231,10 +231,17 @@
     bgContainer.appendChild(visualContainer);
 
     visualContainer.innerHTML = '';
+    visualContainer.classList.remove('layout-center');
+    if (step.isShort) {
+      visualContainer.classList.add('layout-center');
+    }
 
     step.elements.forEach(function(item) {
       var elDom = buildElement(item);
-      if (skipTransition) {
+      if (step.isShort) {
+        elDom.classList.add('show');
+        elDom.classList.add('always-on');
+      } else if (skipTransition) {
         elDom.classList.add('show');
       }
       visualContainer.appendChild(elDom);

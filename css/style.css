@@ -158,6 +158,99 @@ html, body {
 }
 
 /* ========================================
+   LAYOUT CENTER (welcome / closing)
+   ======================================== */
+.scene-visual.layout-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+}
+
+.scene-visual.layout-center .el {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.scene-visual.layout-center .el-logo,
+.scene-visual.layout-center .el-clogo {
+    width: clamp(120px, 22vw, 220px);
+    margin-bottom: 1.5rem;
+}
+
+.scene-visual.layout-center .el-title {
+    font-size: clamp(26px, 5vw, 54px);
+    color: #fff;
+    text-shadow: 0 0 18px rgba(255,107,157,0.4), 0 2px 5px rgba(0,0,0,0.3);
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+}
+
+.scene-visual.layout-center .el-subtitle {
+    font-size: clamp(12px, 2.4vw, 18px);
+    color: #FF6B9D;
+    text-shadow: 0 0 8px rgba(255,107,157,0.2);
+    margin-bottom: 0.8rem;
+}
+
+.scene-visual.layout-center .el-names {
+    font-size: clamp(11px, 1.8vw, 15px);
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+}
+
+.scene-visual.layout-center .el-scroll-hint {
+    position: relative !important;
+    margin-top: 1rem;
+    color: rgba(255,255,255,0.3);
+    font-size: 12px;
+    animation: hint-bounce 2s ease-in-out infinite;
+}
+
+.scene-visual.layout-center .el-cfooter {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: rgba(255,255,255,0.4);
+    font-size: clamp(11px, 1.8vw, 15px);
+    margin-top: 1rem;
+}
+
+.scene-visual.layout-center .footer-logo {
+    width: clamp(30px, 4vw, 45px);
+    height: auto;
+}
+
+.scene-visual.layout-center .el-ctitle {
+    font-size: clamp(30px, 6vw, 62px);
+    color: #fff;
+    text-shadow: 0 0 22px rgba(255,255,255,0.2);
+    margin-top: 0.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.scene-visual.layout-center .el-csub {
+    font-size: clamp(12px, 2.4vw, 18px);
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 0.6rem;
+}
+
+.scene-visual.layout-center .el-cnames {
+    font-size: clamp(11px, 1.8vw, 14px);
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
+
+/* ========================================
    ELEMENTS
    ======================================== */
 .el {
