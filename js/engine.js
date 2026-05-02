@@ -6,7 +6,7 @@
   var isTransitioning = false;
   var cooldown = false;
 
-  var screenEl, bgContainer, visualContainer;
+  var sceneFrame, screenEl, bgContainer, visualContainer;
 
   // ========================================
   // HELPERS
@@ -292,6 +292,9 @@
   function initDOM() {
     app.innerHTML = '';
 
+    sceneFrame = document.createElement('div');
+    sceneFrame.id = 'scene-frame';
+
     screenEl = document.createElement('div');
     screenEl.className = 'screen';
 
@@ -303,7 +306,8 @@
 
     bgContainer.appendChild(visualContainer);
     screenEl.appendChild(bgContainer);
-    app.appendChild(screenEl);
+    sceneFrame.appendChild(screenEl);
+    app.appendChild(sceneFrame);
 
     // Toggle button
     var btn = document.createElement('button');
