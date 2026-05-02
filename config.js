@@ -16,51 +16,67 @@ const storyContent = [
     ],
   },
 */
-  // ===== ESCENA 1: Full image =====
+
+
+  // ===== ESCENA 1: pesadilla parte 1=====
+  /*
 {
     id: 'esc_1',
-    background: { type: 'full', image: 'clase.jpg' },
+    background: { type: 'full', color: 'linear-gradient(180deg, #1a1a2e, #0f3460)' },
     sequence: [
-      { type: 'character', id: 'komori', file: 'komori_asustada.png', position: 'center' },
-      { type: 'character', id: 'sombrero', file: 'sombrero.png', position: 'right' },
+
+      { type: 'bubble', target: '',position: 'center',text: { jp: 'donde estoy?', en: 'donde estoy?' } },
+      { type: 'bubble', target: '',tremble: true,position: 'center',text: { jp: 'que es esto?', en: 'que es esto ?' } },
+      { type: 'character', id: 'komori', file: 'komori_asustada.png', position: 'center' ,silhouette: true},
+      
       
     ],
   },
-  /*
-  {
-    id: 'esc_1',
-    background: { type: 'full', image: 'fondo-entrada.jpg' },
-    sequence: [
-      { type: 'character', id: 'komori', file: 'komori.png', position: 'right' },
-      { type: 'character', id: 'sombrero', file: 'sombrero.png', position: 'right' },
-      { type: 'bubble', target: 'komori', text: { jp: 'こんにちは！はじめまして！', en: '¡Hola! ¡Mucho gusto!' } },
-      { type: 'character', id: 'asahi', file: 'asahi.png', position: 'left' },
-      { type: 'bubble', target: 'asahi', text: { jp: 'やあ！元気？', en: '¡Hey! ¿Cómo estás?' } },
-      { type: 'bubble', target: 'komori', position: 'center',text: { jp: 'nuevo dialogo', en: 'traduccion' } },
-    ],
-  },*/
 
-  // ===== ESCENA 2: Split vertical =====
-  {
+    // ===== ESCENA 2: pesadilla parte 2=====
+{
     id: 'esc_2',
-    background: { type: 'split-v', left: 'clase.jpg', right: 'clase-vertical.jpg' },
+    background: { type: 'full', image: 'clase.jpg', nightmare: true },
     sequence: [
-      { type: 'character', id: 'komori', file: 'komori.png', position: 'left' },
-      { type: 'character', id: 'asahi', file: 'asahi.png', position: 'right' },
-      { type: 'bubble', target: 'komori', text: { jp: '今日はいい天気ですね！', en: '¡Hoy hace buen clima!' } },
-      { type: 'bubble', target: 'asahi', text: { jp: 'そうですね！散歩しましょうか？', en: '¡Así es! ¿Vamos a caminar?' } },
+      
+      { type: 'character', id: 'komori', file: 'komori_asustada.png', position: 'center' ,silhouette: true},
+      { type: 'bubble', target: 'komori',tremble: true,position: 'center',text: { jp: 'que es esto?', en: 'que es esto ?' } },
+      { type: 'character', id: 'komori1', file: 'komori_asustada.png', position: 'center'},
+      { type: 'bubble', target: 'komori1',tremble: true,position: 'center',text: { jp: 'quienes son estas personas?', en: 'que son estas personas ?' } },
+      { type: 'character', id: 'mango', file: 'mango.png', position: 'left' ,silhouette: true},
+      { type: 'character', id: 'camero', file: 'camero.png', position: 'right' ,silhouette: true},
+      
     ],
   },
+  
 
-  // ===== ESCENA 3: Split horizontal =====
+  // ===== ESCENA 3: dormitorio =====
   {
     id: 'esc_3',
-    background: { type: 'split-h', top: 'clase.jpg', bottom: 'clase.jpg' },
+    background: { type: 'full',image: 'dormitorio.jpg' },
     sequence: [
-      { type: 'character', id: 'komori', file: 'komori.png', position: 'top-right' },
-      { type: 'bubble', target: 'komori', position: 'tr', text: { jp: '...', en: '...' } },
-      { type: 'character', id: 'asahi', file: 'asahi.png', position: 'bottom-left' },
-      { type: 'bubble', target: 'asahi', position: 'bl', text: { jp: '...', en: '...' } },
+      { type: 'character', id: 'komori', file: 'komori_alerta.png', position: 'right' },
+      { type: 'bubble', target: 'komori', text: { jp: 'oh era un sueño', en: '¡Era solo un sueño!' } },
+      { type: 'bubble', target: 'komori', text: { jp: 'no quiero ir a clases', en: '¡No quiero ir a clases!' } },
+       { type: 'character', id: 'asahi', file: 'asahi_enojada_derecha.png', position: 'center' },
+      { type: 'bubble', target: 'asahi',position: 'tl-l',text: { jp: 'そうですね！散歩しましょうか？', en: '¡Así es! ¿Vamos a caminar?' } },
+      { type: 'character', id: 'komori', file: 'komori_timida.png', position: 'right' },
+    ],
+  },
+*/
+  // ===== ESCENA 4: caminando al colegio =====
+  {
+    id: 'esc_4',
+    background: { type: 'full', image: 'caminata.png' },
+    sequence: [
+      { type: 'character', id: 'komori', file: 'komori.png', position: 'right' },
+      { type: 'bubble', target: 'komori', text: { jp: 'oh era un sueño', en: '¡Era solo un sueño!' } },
+      { type: 'bubble', target: 'komori', text: { jp: 'no quiero ir a clases', en: '¡No quiero ir a clases!' } },
+      { type: 'character', id: 'asahi', file: 'asahi.png', position: 'center' },
+      { type: 'bubble', target: 'komori',hidden: true, text: { jp: '', en: '' } },
+      { type: 'bubble', target: 'asahi', position: 'tl-l', text: { jp: 'そうですね！散歩しましょうか？', en: '¡Así es! ¿Vamos a caminar?' } },
+      { type: 'bubble', target: 'asahi', position: 'tl-l', text: { jp: 'そうですね！散歩しましょうか？', en: '¡Así es! ¿Vamos a caminar?' } },
+      
     ],
   },
 /*

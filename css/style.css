@@ -303,6 +303,8 @@ html, body {
 
 .el.show { opacity: 1; }
 .el.always-on { opacity: 1 !important; }
+.el-exit { opacity: 0 !important; pointer-events: none; }
+.bubble-hidden { display: none !important; }
 
 /* ========================================
    CHARACTERS
@@ -485,6 +487,18 @@ html, body {
     bottom: 10px;
     left: -10px;
 }
+.bubble.pos-top-left {
+    left: 17%;
+    top: 6%;
+}
+.bubble.pos-top-left::after {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 11px solid var(--bubble-bg);
+    transform: rotate(-45deg);
+    bottom: 10px;
+    left: -10px;
+}
 
 /* bottom-right → 10% derecha, 6% abajo, junto al personaje → centro */
 .bubble.pos-bottom-right {
@@ -528,6 +542,19 @@ html, body {
     transform: rotate(-45deg);
     bottom: 10px;
     left: -10px;
+}
+/*posicion para la escena 3 en dormitorio para asahi*/
+.bubble.pos-tl-l {
+    left: 15%;
+    top: 10%;
+}
+.bubble.pos-tl-l::after {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 11px solid var(--bubble-bg);
+    
+    bottom: -10px;
+    right: 15px;
 }
 
 /* tr → 8% derecha, 5% arriba, junto al personaje → centro */

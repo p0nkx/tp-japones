@@ -117,10 +117,12 @@
         el.classList.add('bubble');
         el.classList.add('pos-' + (item.bubblePos || 'center'));
         el.dataset.target = item.target || '';
-        if (item.tremble) {
-          el.classList.add('bubble-tremble');
+        if (item.hidden) {
+          el.classList.add('bubble-hidden');
+        }
+        if (item.tremble && !item.hidden) {
           el.innerHTML = '<div class="bubble-tremble-inner">' + buildBubbleContent(item.text) + '</div>';
-        } else {
+        } else if (!item.hidden) {
           el.innerHTML = buildBubbleContent(item.text);
         }
         break;
@@ -148,23 +150,46 @@
     return el;
   }
 
-  function resolveBubbleVisibility() {
+  function resolveElementVisibility() {
     var allBubbles = visualContainer.querySelectorAll('.bubble');
-    var targets = {};
+    var bubblesByTarget = {};
     for (var i = 0; i < allBubbles.length; i++) {
       var t = allBubbles[i].dataset.target || '__none__';
-      if (!targets[t]) targets[t] = [];
-      targets[t].push(allBubbles[i]);
+      if (!bubblesByTarget[t]) bubblesByTarget[t] = [];
+      bubblesByTarget[t].push(allBubbles[i]);
     }
-    for (var key in targets) {
-      var group = targets[key];
+    for (var key in bubblesByTarget) {
+      var group = bubblesByTarget[key];
       for (var j = 0; j < group.length; j++) {
-        if (j === group.length - 1) {
-          group[j].classList.remove('bubble-exit');
+        if (group[j].classList.contains('bubble-hidden')) {
+          group[j].classList.remove('show');
+          group[j].classList.add('el-exit');
+        } else if (j === group.length - 1) {
+          group[j].classList.remove('el-exit');
           group[j].classList.add('show');
         } else {
           group[j].classList.remove('show');
-          group[j].classList.add('bubble-exit');
+          group[j].classList.add('el-exit');
+        }
+      }
+    }
+
+    var allChars = visualContainer.querySelectorAll('.char');
+    var charsById = {};
+    for (var k = 0; k < allChars.length; k++) {
+      var c = allChars[k].dataset.charId || '__none__';
+      if (!charsById[c]) charsById[c] = [];
+      charsById[c].push(allChars[k]);
+    }
+    for (var key2 in charsById) {
+      var group2 = charsById[key2];
+      for (var m = 0; m < group2.length; m++) {
+        if (m === group2.length - 1) {
+          group2[m].classList.remove('el-exit');
+          group2[m].classList.add('show');
+        } else {
+          group2[m].classList.remove('show');
+          group2[m].classList.add('el-exit');
         }
       }
     }
@@ -258,7 +283,7 @@
       visualContainer.appendChild(elDom);
     });
 
-    resolveBubbleVisibility();
+    resolveElementVisibility();
 
     if (!skipTransition && stepIndex > 0) {
       var prevStep = allSteps[stepIndex - 1];
@@ -313,7 +338,7 @@
       elDom.classList.add('show');
     });
 
-    resolveBubbleVisibility();
+    resolveElementVisibility();
 
     if (newStepIndex < currentStep) {
       var allEls = visualContainer.querySelectorAll('.el');
@@ -321,7 +346,7 @@
       for (var i = allEls.length - 1; i >= keepCount; i--) {
         allEls[i].remove();
       }
-      resolveBubbleVisibility();
+      resolveElementVisibility();
     }
 
     currentStep = newStepIndex;

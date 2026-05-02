@@ -171,14 +171,28 @@ background: {
 | `left` | 6% izq, 8% arriba | Junto al personaje izq → centro |
 | `right` | 6% der, 8% arriba | Junto al personaje der → centro |
 | `center` | Centrado arriba | Centro de la escena |
-| `top-right` | 10% der, 6% arriba | Arriba-derecha |
-| `top-left` | 10% izq, 6% arriba | Arriba-izquierda |
-| `bottom-right` | 10% der, 6% abajo | Abajo-derecha |
-| `bottom-left` | 10% izq, 6% abajo | Abajo-izquierda |
-| `tl` | 8% izq, 5% arriba | Esquina superior-izquierda |
-| `tr` | 8% der, 5% arriba | Esquina superior-derecha |
-| `bl` | 8% izq, 5% abajo | Esquina inferior-izquierda |
-| `br` | 8% der, 5% abajo | Esquina inferior-derecha |
+| `top-right` | 17% izq, 6% arriba | Arriba-izquierda |
+| `top-left` | 17% izq, 6% arriba | Arriba-izquierda |
+| `bottom-right` | 20% der, 6% abajo | Abajo-derecha |
+| `bottom-left` | 20% izq, 6% abajo | Abajo-izquierda |
+| `tl` | 20% izq, 5% arriba | Esquina superior-izquierda |
+| `tl-l` | 15% izq, 10% arriba | Variante para escena dormitorio |
+| `tr` | 20% der, 5% arriba | Esquina superior-derecha |
+| `bl` | 20% izq, 15% abajo | Esquina inferior-izquierda |
+| `br` | 20% der, 15% abajo | Esquina inferior-derecha |
+
+### Burbuja Oculta (hidden)
+
+Para esconder una burbuja existente sin que aparezca nada nuevo. Útil para "cerrar" diálogos.
+
+```javascript
+// La burbuja anterior de komori desaparece con fade-out
+{ type: 'bubble', target: 'komori', hidden: true },
+```
+
+| Campo | Descripción |
+|-------|-------------|
+| `hidden` | `true` → la burbuja no se renderiza, solo oculta la anterior |
 
 ### Cómo Funciona el Reemplazo de Burbujas
 
