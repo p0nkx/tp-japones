@@ -94,6 +94,10 @@
         el.classList.add('el-names');
         el.textContent = item.text;
         break;
+      case 'logo':
+        el.classList.add('el-logo');
+        el.appendChild(createImg(item.file));
+        break;
       case 'scroll-hint':
         el.classList.add('el-scroll-hint');
         el.textContent = item.text;
@@ -113,6 +117,10 @@
         el.classList.add('el-ctitle');
         el.textContent = item.text;
         break;
+      case 'closing-logo':
+        el.classList.add('el-clogo');
+        el.appendChild(createImg(item.file));
+        break;
       case 'closing-sub':
         el.classList.add('el-csub');
         el.textContent = item.text;
@@ -121,9 +129,9 @@
         el.classList.add('el-cnames');
         el.textContent = item.text;
         break;
-      case 'closing-class':
-        el.classList.add('el-cclass');
-        el.textContent = item.text;
+      case 'closing-footer':
+        el.classList.add('el-cfooter');
+        el.innerHTML = item.text + '<img class="footer-logo" src="' + IMG + item.logo + '" />';
         break;
     }
     return el;

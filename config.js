@@ -4,11 +4,12 @@ const storyContent = [
   {
     id: 'welcome',
     isWelcome: true,
-    background: { type: 'full', color: 'linear-gradient(180deg, #1a1a2e, #16213e, #0f3460)' },
+    background: { type: 'full', color: 'linear-gradient(180deg, #652381, #3d1450, #1a1a2e)' },
     elements: [
+      { type: 'logo', file: 'logo.png' },
       { type: 'title', text: '会話 - Role Play' },
       { type: 'subtitle', text: 'Trabajo Práctico Final' },
-      { type: 'names', text: 'Tu Nombre & Tu Compañero' },
+      { type: 'names', text: 'LUNA FABIAN' },
       { type: 'scroll-hint', text: 'SCROLL ↓' },
     ],
   },
@@ -139,12 +140,13 @@ const storyContent = [
   // ===== CIERRE =====
   {
     id: 'closing',
-    background: { type: 'full', color: 'linear-gradient(180deg, #FF6B6B, #4A0E4E, #1a1a2e)' },
+    background: { type: 'full', color: 'linear-gradient(180deg, #652381, #3d1450, #1a1a2e)' },
     elements: [
+      { type: 'closing-logo', file: 'logo.png' },
       { type: 'closing-title', text: '終わり' },
       { type: 'closing-sub', text: 'Fin' },
-      { type: 'closing-names', text: 'Tu Nombre & Tu Compañero' },
-      { type: 'closing-class', text: 'Clase de Japonés - 2025' },
+      { type: 'closing-names', text: 'LUNA FABIAN' },
+      { type: 'closing-footer', text: 'TP Nivel 3 de', logo: 'logo.png' },
     ],
   },
 
