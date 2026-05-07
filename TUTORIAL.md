@@ -84,44 +84,18 @@ Aquí cambias las características del elemento seleccionado:
 2. En el panel derecho configura:
    - **Target**: Escribe el ID del personaje que habla (el mismo que pusiste arriba)
    - **Textos**: 
-     - **JP**: Texto en japonés (obligatorio)
-     - **EN**: Texto en inglés (opcional)
-     - **ES**: Texto en español (opcional)
+     - **JP**: Texto en japonés (obligatorio) (texto principal de la burbuja)
+     - **EN**: Texto en inglés (opcional) (texto secundario de la burbuja)
+     - **ES**: Texto en español (opcional) (texto secundario de la burbuja)
    - **Posición**: Arrastra la burbuja libremente en la vista previa
-   - **Efecto tembloroso**: Márcalo para que la burbuja tiemble (efecto de miedo)
+   - 
 
 ### Cambiar entre Idiomas
 Haz clic en el botón **"JP"** en la esquina superior derecha para cambiar qué idiomas se muestran:
 - Solo japonés
-- Japonés + inglés  
+- Japonés + hiragana  
 - Japonés + español
-- Los tres idiomas
-
-## Cambiar el Fondo de la Escena
-
-En el panel derecho, busca la sección **"Fondo"**:
-
-### Fondo Completo (Full)
-- **Tipo**: Selecciona "Full"
-- **Imagen**: Escribe el nombre del archivo JPG en `images/`
-- O usa un **color degradado** en lugar de imagen
-
-### Fondo Dividido Vertical (Izquierda/Derecha)
-- **Tipo**: Selecciona "Split Vertical"
-- **Imagen izquierda**: Escribe el nombre del archivo
-- **Imagen derecha**: Escribe el nombre del archivo
-
-### Fondo Dividido Horizontal (Arriba/Abajo)
-- **Tipo**: Selecciona "Split Horizontal"
-- **Imagen superior**: Escribe el nombre del archivo
-- **Imagen inferior**: Escribe el nombre del archivo
-
-### Fondo Diagonal
-- **Tipo**: Selecciona "Diagonal"
-- **Dirección**: Elige la diagonal (↘ o ↙)
-- **Imágenes**: Configura las dos partes
-
-*Nota: Las imágenes deben estar en la carpeta `images/` de tu proyecto antes de usarlas.*
+- Las tres juntas
 
 ## Guardar tu Trabajo
 
