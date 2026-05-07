@@ -1,361 +1,121 @@
-# Japanese Role Play - Visual Novel Engine
+# Japanese Role Play - Editor Visual de Novelas Visuales
 
-Novela visual interactiva con control por scroll. Cada scroll revela un nuevo elemento en secuencia, con transiciones suaves entre escenas.
+Crea novelas visuales interactivas con control por scroll usando una interfaz web visual. No necesitas saber programar.
 
 ---
 
-## Estructura del Proyecto
+## 🚀 Inicio Rápido
+
+1. **Abrir el editor**: Agrega `?edit` al final de la URL
+   ```
+   index.html?edit
+   ```
+
+2. **Crear una escena**: Haz clic en "+ Nueva escena"
+
+3. **Agregar personajes**: Usa el botón "+" en el panel izquierdo
+
+4. **Agregar diálogos**: Selecciona "Burbuja" y escribe los textos
+
+5. **Guardar**: Usa "💾 Guardar" para guardar localmente o "Exportar" para crear un archivo ZIP
+
+---
+
+## 📖 ¿Cómo usar el Editor?
+
+Para un tutorial completo, haz clic en el botón **"Tutorial"** (esquina superior izquierda) cuando estés en el editor.
+
+El tutorial cubre:
+- Cómo navegar por la interfaz
+- Cómo agregar y mover personajes
+- Cómo crear diálogos en 3 idiomas
+- Cómo cambiar fondos
+- Cómo guardar y exportar tu proyecto
+
+---
+
+## ✨ Características Principales
+
+### Interfaz Visual Completa
+- **Editor de propiedades**: Cambia cualquier elemento desde el panel derecho
+- **Arrastrar y soltar**: Mueve personajes y burbujas libremente
+- **Redimensionar**: Cambia el tamaño arrastrando las esquinas
+- **3 idiomas**: Japonés, inglés y español
+
+### Gestión de Escenas
+- **Navegación**: Usa las flechas ◀ ▶ o el selector desplegable
+- **Reordenar**: Arrátstralas en el botón "⇅" para cambiar el orden
+- **Múltiples fondos**: Completo, dividido (vertical/horizontal), diagonal
+
+### Guardado y Exportación
+- **Local**: Guarda en tu navegador (no borres el caché)
+- **ZIP**: Exporta todo el proyecto con imágenes incluídas
+- **Importar**: Carga proyectos desde un archivo ZIP
+
+---
+
+## 🎮 Controles de Navegación (Modo Vista Previa)
+
+### Con el Mouse
+- **Scroll hacia abajo**: Avanza un paso
+- **Scroll hacia arriba**: Retrocede un paso
+
+### Con el Teclado
+- **Flecha ↓ o Espacio**: Avanza
+- **Flecha ↑**: Retrocede
+
+### En Móvil/Tablet
+- **Deslizar arriba**: Avanza
+- **Deslizar abajo**: Retrocede
+
+---
+
+## 📱 Compatibilidad
+
+- **Desktop**: Chrome, Firefox, Edge, Safari
+- **Móvil**: Android e iOS (cualquier navegador moderno)
+- **Tablet**: Funciona perfectamente en pantallas táctiles
+
+---
+
+## ⚠️ Notas Importantes
+
+1. **Imágenes**: Deben estar en la carpeta `images/` del proyecto
+2. **IDs únicos**: Cada personaje necesita un nombre único en su escena
+3. **Guardar frecuentemente**: Exporta tu proyecto como ZIP regularmente
+4. **Caché del navegador**: Si guardas localmente, no borres el caché
+
+---
+
+## 🛠 Estructura del Proyecto (Para Desarrolladores)
 
 ```
 japanese-roleplay/
-├── index.html          ← Solo abrir en navegador, no editar
-├── config.js           ← ARCHIVO PRINCIPAL: aquí defines toda tu historia
+├── index.html          ← Archivo principal
+├── config.js           ← Configuración del proyecto (generado por el editor)
 ├── js/
-│   └── engine.js       ← Motor de renderizado (no tocar)
+│   ├── engine.js       ← Motor de renderizado
+│   ├── storage.js      ← Gestión de almacenamiento
+│   └── editor/         ← Archivos del editor visual
 ├── css/
-│   └── style.css       ← Estilos visuales (opcional)
-├── images/             ← Aquí van personajes y fondos
+│   └── style.css       ← Estilos visuales
+├── images/             ← Personajes y fondos
 │   └── ...
-└── README.md
+└── README.md           ← Este archivo
 ```
 
 ---
 
-## Cómo Funciona el Motor
+## 🚀 Cómo Abrir el Proyecto
 
-### Navegación
-- **Scroll del mouse**: avanza/retrocede paso a paso
-- **Teclas**: ↑ (retroceder) ↓ o Espacio (avanzar)
-- **Touch**: deslizar arriba/abajo en móvil
-- El scroll nativo está desactivado — solo el motor controla la navegación
-
-### Pasos y Escenas
-- Cada escena tiene una **secuencia de elementos** (personajes, burbujas, etc.)
-- **Cada scroll = un paso**: aparece un nuevo elemento con fade-in
-- Al cambiar de escena: overlay negro → se carga todo el contenido → fade-out del negro
-- **Welcome y Closing**: muestran todos sus elementos de una vez (no tienen pasos secuenciales)
-
-### Reemplazo de Elementos
-- Al definir una **nueva burbuja** para un personaje que ya tiene una visible, la anterior se oculta con fade-out
-- Al definir un **nuevo personaje** con el mismo `id`, el anterior desaparece con fade-out
-- Al retroceder con scroll, los elementos anteriores reaparecen con fade-in
-
-### Botón de Idioma (siempre visible, esquina superior derecha)
-| Click | Modo | Muestra |
-|-------|------|---------|
-| 1 | JP | Solo japonés (jp) |
-| 2 | JP+EN | Japonés + inglés (jp + en) |
-| 3 | JP+ES | Japonés + español (jp + es) |
-| 4 | JP+EN+ES | Los tres textos |
+- **Modo Editor**: `index.html?edit`
+- **Modo Normal**: Solo abre `index.html`
+- **Recomendado**: Live Server en VS Code para desarrollo
 
 ---
 
-# 📖 Guía Completa de Edición
-
-Solo necesitas editar `config.js`. La variable `storyContent` es un array donde cada objeto es una escena.
-
----
-
-## 🎨 Tipos de Fondo
-
-### 1. Full (una sola imagen)
-
-```javascript
-background: { type: 'full', image: 'fondo-entrada.jpg' }
-```
-
-Con color degradado (sin imagen):
-```javascript
-background: { type: 'full', color: 'linear-gradient(180deg, #1a1a2e, #0f3460)' }
-```
-
-### 2. Split Vertical (izquierda / derecha)
-
-```javascript
-background: { type: 'split-v', left: 'clase.jpg', right: 'fondo.jpg' }
-```
-
-### 3. Split Horizontal (arriba / abajo)
-
-```javascript
-background: { type: 'split-h', top: 'clase.jpg', bottom: 'fondo.jpg' }
-```
-
-### 4. Diagonal ↘ (esquina superior-izq → inferior-der)
-
-Corte diagonal de (0,0) a (100%,100%):
-```javascript
-background: {
-  type: 'diagonal',
-  direction: 'tl-br',
-  top: 'clase.jpg',
-  bottom: 'fondo.jpg',
-}
-```
-
-### 5. Diagonal ↙ (esquina superior-der → inferior-izq)
-
-Corte diagonal de (100%,0) a (0,100%):
-```javascript
-background: {
-  type: 'diagonal',
-  direction: 'tr-bl',
-  top: 'clase.jpg',
-  bottom: 'fondo.jpg',
-}
-```
-
-### Propiedad `nightmare`
-
-Aplica `grayscale(100%) brightness(40%) blur(2px)` al fondo:
-```javascript
-background: { type: 'full', image: 'clase.jpg', nightmare: true }
-```
-
-> **Nota**: Las imágenes se ponen en la carpeta `images/` y se referencian solo por nombre.
-
----
-
-## 👤 Personajes
-
-```javascript
-{ type: 'character', id: 'komori', file: 'komori.png', position: 'right' }
-```
-
-| Campo | Descripción |
-|-------|-------------|
-| `type` | Siempre `'character'` |
-| `id` | Identificador único. Se usa en las burbujas con `target` |
-| `file` | Archivo PNG en `images/` |
-| `position` | Posición en la escena (ver tabla abajo) |
-| `silhouette` | **Opcional**: `true` convierte al personaje en silueta negra |
-| `hidden` | **Opcional**: `true` oculta el personaje sin renderizar uno nuevo |
-
-### Posiciones Disponibles para Personajes
-
-| Valor | Visual | Cuándo usar |
-|-------|--------|-------------|
-| `left` | Abajo-izquierda | Fondo full, split-v |
-| `right` | Abajo-derecha | Fondo full, split-v |
-| `center` | Abajo-centro | Fondo full |
-| `top` | Arriba-centro | Split-h, diagonal |
-| `bottom` | Abajo-centro | Split-h, diagonal |
-| `top-right` | Mitad superior, lado derecho | Split-h, split-v |
-| `top-left` | Mitad superior, lado izquierdo | Split-h, split-v |
-| `bottom-right` | Mitad inferior, lado derecho | Split-h, split-v |
-| `bottom-left` | Mitad inferior, lado izquierdo | Split-h, split-v |
-| `tl` | Dentro del triángulo superior-izq | Diagonal |
-| `tr` | Dentro del triángulo superior-der | Diagonal |
-| `bl` | Dentro del triángulo inferior-izq | Diagonal |
-| `br` | Dentro del triángulo inferior-der | Diagonal |
-
----
-
-## 💬 Burbujas de Diálogo
-
-### Burbuja Básica (hereda posición del personaje)
-
-```javascript
-{ type: 'bubble', target: 'komori', text: { jp: 'こんにちは！', en: '¡Hola!' } }
-```
-
-### Estructura del Texto (3 idiomas)
-
-```javascript
-text: {
-  jp: 'ここ は どこ です か。',      // Japonés (siempre visible en algún modo)
-  en: 'Koko wa doko desu ka.',       // Inglés (romanji u otro idioma)
-  es: '¿Dónde estoy?'                // Español (traducción)
-}
-```
-
-Todos los campos son opcionales. El botón superior derecho alterna qué campos se muestran.
-
-### Campos de la Burbuja
-
-| Campo | Descripción |
-|-------|-------------|
-| `type` | Siempre `'bubble'` |
-| `target` | El `id` del personaje al que pertenece |
-| `position` | **Opcional**: fuerza una posición diferente |
-| `tremble` | **Opcional**: `true` hace que la burbuja tiemble (miedo) |
-| `hidden` | **Opcional**: `true` oculta la burbuja sin mostrar nada nuevo |
-
-### Posiciones Disponibles para Burbujas
-
-| Valor | Posición | Descripción |
-|-------|----------|-------------|
-| `left` | 6% izq, 8% arriba | Junto al personaje izq → centro |
-| `right` | 6% der, 8% arriba | Junto al personaje der → centro |
-| `center` | Centrado arriba | Centro de la escena |
-| `top-right` | 17% izq, 6% arriba | Arriba-izquierda |
-| `top-left` | 17% izq, 6% arriba | Arriba-izquierda |
-| `bottom-right` | 20% der, 6% abajo | Abajo-derecha |
-| `bottom-left` | 20% izq, 6% abajo | Abajo-izquierda |
-| `tl` | 20% izq, 5% arriba | Esquina superior-izquierda |
-| `tl-l` | 15% izq, 10% arriba | Variante para escena dormitorio |
-| `tr` | 20% der, 5% arriba | Esquina superior-derecha |
-| `bl` | 20% izq, 15% abajo | Esquina inferior-izquierda |
-| `bl-l` | 15% izq, 40% abajo | Variante para camero corriendo |
-| `br` | 20% der, 15% abajo | Esquina inferior-derecha |
-| `narration` | Exactamente centrado | Narración/introducción (sin cola) |
-
-### Narración Centrada
-
-Burbuja centrada exactamente en el medio del contenedor, sin personaje. Ideal para introducciones.
-
-```javascript
-{ type: 'narration', text: { jp: 'ある日の朝...', en: 'Una mañana...', es: 'Una mañana...' } },
-{ type: 'narration', hidden: true },  // oculta la narración
-```
-
-### Reemplazo de Burbujas
-
-```javascript
-// Paso 1: Aparece la primera burbuja de komori
-{ type: 'bubble', target: 'komori', text: { jp: 'こんにちは！', en: '¡Hola!' } },
-
-// Paso 2: Aparece segunda burbuja → la primera desaparece con fade-out
-{ type: 'bubble', target: 'komori', text: { jp: 'はじめまして！', en: '¡Mucho gusto!' } },
-
-// Paso 3: Ocultar todas las burbujas de komori (sin mostrar nada nuevo)
-{ type: 'bubble', target: 'komori', hidden: true },
-```
-
----
-
-## 📝 Estructura Completa de una Escena
-
-```javascript
-{
-  id: 'mi_escena',
-  background: { type: 'full', image: 'fondo.jpg' },
-  sequence: [
-    // Paso 1: Aparece personaje
-    { type: 'character', id: 'komori', file: 'komori.png', position: 'right' },
-
-    // Paso 2: Aparece su burbuja (hereda posición 'right')
-    { type: 'bubble', target: 'komori', text: { jp: 'こんにちは！', en: '¡Hola!' } },
-
-    // Paso 3: Segundo personaje
-    { type: 'character', id: 'asahi', file: 'asahi.png', position: 'left' },
-
-    // Paso 4: Burbuja de asahi (hereda posición 'left')
-    { type: 'bubble', target: 'asahi', text: { jp: 'やあ！', en: '¡Hey!' } },
-
-    // Paso 5: Nueva burbuja de komori (la anterior desaparece)
-    { type: 'bubble', target: 'komori', text: { jp: '元気？', en: '¿Cómo estás?' } },
-
-    // Paso 6: Ocultar burbuja de komori
-    { type: 'bubble', target: 'komori', hidden: true },
-  ],
-}
-```
-
-> **Regla**: Cada elemento en `sequence` = un paso de scroll.
-
----
-
-## 🎬 Escena de Portada (Welcome)
-
-```javascript
-{
-  id: 'welcome',
-  isWelcome: true,
-  background: { type: 'full', color: 'linear-gradient(180deg, #1a1a2e, #16213e, #0f3460)' },
-  elements: [
-    { type: 'logo', file: 'logo.png' },
-    { type: 'title', text: '会話 - Role Play' },
-    { type: 'subtitle', text: 'Trabajo Práctico Final' },
-    { type: 'names', text: 'LUNA FABIAN' },
-    { type: 'scroll-hint', text: 'SCROLL ↓' },
-  ],
-}
-```
-
----
-
-## 🔚 Escena de Cierre (Closing)
-
-```javascript
-{
-  id: 'closing',
-  background: { type: 'full', color: 'linear-gradient(180deg, #652381, #3d1450, #1a1a2e)' },
-  elements: [
-    { type: 'closing-logo', file: 'logo.png' },
-    { type: 'closing-title', text: '終わり' },
-    { type: 'closing-sub', text: 'Fin' },
-    { type: 'closing-names', text: 'LUNA FABIAN' },
-    { type: 'closing-footer', text: 'TP Nivel 3 de', logo: 'logo.png' },
-  ],
-}
-```
-
----
-
-## 🌙 Efectos Especiales
-
-### 1. Pesadilla (fondo oscuro borroso)
-
-```javascript
-background: { type: 'full', image: 'clase.jpg', nightmare: true }
-```
-Funciona con todos los tipos de fondo (`full`, `split-v`, `split-h`, `diagonal`).
-
-### 2. Silueta (personaje completamente negro)
-
-```javascript
-{ type: 'character', id: 'komori', file: 'komori.png', position: 'left', silhouette: true }
-```
-
-### 3. Burbuja Temblorosa (voz temblorosa/miedo)
-
-```javascript
-{ type: 'bubble', target: 'komori', tremble: true, text: { jp: '怖い...', en: 'Tengo miedo...' } }
-```
-
-> **Combinación**: `nightmare: true` + `silhouette: true` + `tremble: true` = escena de terror completa.
-
----
-
-## 🚀 Cómo Agregar una Nueva Escena
-
-1. **Agrega las imágenes** a la carpeta `images/` (PNGs para personajes, JPGs para fondos)
-2. **Edita `config.js`** — copia un bloque de escena existente y pégalo antes del `closing`
-3. **Cambia** el `id`, el `background` y la `sequence` con tus datos
-
----
-
-## 🎮 Control de Scroll
-
-- **Avanzar**: scroll hacia abajo, flecha ↓, o barra espaciadora
-- **Retroceder**: scroll hacia arriba o flecha ↑
-- Cooldown de 500ms entre pasos
-- Overlay negro de 300ms entre escenas
-
----
-
-## 📱 Responsive
-
-- **Desktop**: ancho del frame al 88%
-- **Tablet (≤768px)**: 93% de ancho
-- **Móvil (≤480px)**: 95% de ancho
-
----
-
-## ⚠️ Reglas Importantes
-
-1. **No modifiques `engine.js`** a menos que sepas lo que haces
-2. **Cada `id` de personaje** debe ser único dentro de una escena
-3. **El `target` de una burbuja** debe coincidir con un `id` de personaje existente
-4. **El `id` de escena** debe ser único (no repetir)
-5. **La portada** usa `isWelcome: true` y `elements` (no `sequence`)
-6. **El cierre** usa `id: 'closing'` (no cambiar)
-7. **Las imágenes** van en `images/` y se referencian solo por nombre
-
----
-
-## 🛠 Abrir el Proyecto
-
-- **Simple**: doble click en `index.html`
-- **Recomendado**: Live Server en VS Code (recarga automática al editar `config.js`)
+## 📚 Documentación Adicional
+
+- **Tutorial completo**: Botón "Tutorial" en el editor
+- **Documentación técnica**: Ver `DOCUMENTATION.md`
+- **Changelog**: Ver `CHANGELOG.md`

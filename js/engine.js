@@ -70,7 +70,10 @@
     var charMap = buildCharPositions(seq);
     seq.forEach(function(el) {
       if (el.type.indexOf('bubble') === 0) {
-        if (el.position) {
+        if (el.position && typeof el.position === 'object') {
+          el.bubblePosCustom = el.position;
+          el.bubblePos = 'center';
+        } else if (el.position) {
           el.bubblePos = el.position;
         } else if (el.target) {
           el.bubblePos = charMap[el.target] || 'center';
@@ -82,6 +85,7 @@
   }
 
   function buildBubbleContent(text) {
+    if (!text) return '';
     var mode = window.__bubbleMode || 2;
     var jp = text.jp || '';
     var en = text.en || '';
@@ -108,10 +112,13 @@
     });
   }
 
-  function buildElement(item) {
+  function buildElement(item, isHidden) {
     var el = document.createElement('div');
     el.className = 'el';
     el.dataset.elType = item.type;
+
+    // Use parameter isHidden if provided, otherwise check item.hidden
+    var hidden = (isHidden !== undefined ? isHidden : item.hidden) || false;
 
     switch (item.type) {
       case 'title':
@@ -135,39 +142,78 @@
         el.textContent = item.text;
         break;
       case 'character':
-        if (item.hidden) {
+        if (hidden) {
           el.classList.add('char-hidden');
           el.dataset.charId = item.id || '';
         } else {
-          el.classList.add('char', 'pos-' + item.position);
+          el.classList.add('char');
           el.dataset.charId = item.id || '';
           if (item.silhouette) {
             el.classList.add('char-silhouette');
           }
+          if (item.position && typeof item.position === 'object' && item.position.left) {
+            el.style.left = item.position.left;
+            el.style.top = item.position.top;
+            if (item.position.width) el.style.width = item.position.width;
+            if (item.position.height) el.style.height = item.position.height;
+          } else {
+            el.classList.add('pos-' + item.position);
+          }
           el.appendChild(createImg(item.file));
+        }
+        break;
+      case 'object':
+        if (hidden) {
+          el.classList.add('char-hidden');
+          el.dataset.objId = item.id || '';
+        } else {
+          el.classList.add('scene-object');
+          el.dataset.objId = item.id || '';
+          if (item.position && typeof item.position === 'object' && item.position.left) {
+            el.style.left = item.position.left;
+            el.style.top = item.position.top;
+            if (item.position.width) el.style.width = item.position.width;
+            if (item.position.height) el.style.height = item.position.height;
+          } else {
+            el.style.left = '40%';
+            el.style.top = '30%';
+            el.style.width = '15%';
+          }
+          var objImg = createImg(item.file);
+          objImg.className = 'obj-img';
+          el.appendChild(objImg);
         }
         break;
       case 'bubble':
         el.classList.add('bubble');
-        el.classList.add('pos-' + (item.bubblePos || 'center'));
-        el.dataset.target = item.target || '';
-        if (item.hidden) {
-          el.classList.add('bubble-hidden');
+        if (item.bubblePosCustom && item.bubblePosCustom.left) {
+          el.style.left = item.bubblePosCustom.left;
+          el.style.top = item.bubblePosCustom.top;
+        } else {
+          el.classList.add('pos-' + (item.bubblePos || 'center'));
         }
-        if (item.tremble && !item.hidden) {
+        el.dataset.target = item.target || '';
+        if (hidden) {
+          el.classList.add('bubble-hidden');
+          console.log('  BURBUJA OCULTA (no innerHTML) - target:', item.target);
+        }
+        if (item.tremble && !hidden) {
           el.classList.add('bubble-tremble');
         }
         el.dataset.textJson = JSON.stringify(item.text);
-        if (item.tremble && !item.hidden) {
-          el.innerHTML = '<div class="bubble-tremble-inner">' + buildBubbleContent(item.text) + '</div>';
-        } else if (!item.hidden) {
-          el.innerHTML = buildBubbleContent(item.text);
+        if (!hidden) {
+          if (item.tremble) {
+            el.innerHTML = '<div class="bubble-tremble-inner">' + buildBubbleContent(item.text) + '</div>';
+          } else {
+            el.innerHTML = buildBubbleContent(item.text);
+          }
+          console.log('  BURBUJA VISIBLE - target:', item.target, '- text:', item.text ? item.text.jp : 'NO TEXT');
         }
         break;
       case 'narration':
         el.classList.add('bubble', 'pos-narration');
         el.dataset.target = '__narration__';
-        if (item.hidden) {
+        if (hidden) {
           el.classList.add('bubble-hidden');
         } else {
           el.dataset.textJson = JSON.stringify(item.text);
@@ -199,29 +245,7 @@
   }
 
   function resolveElementVisibility() {
-    var allBubbles = visualContainer.querySelectorAll('.bubble');
-    var bubblesByTarget = {};
-    for (var i = 0; i < allBubbles.length; i++) {
-      var t = allBubbles[i].dataset.target || '__none__';
-      if (!bubblesByTarget[t]) bubblesByTarget[t] = [];
-      bubblesByTarget[t].push(allBubbles[i]);
-    }
-    for (var key in bubblesByTarget) {
-      var group = bubblesByTarget[key];
-      for (var j = 0; j < group.length; j++) {
-        if (group[j].classList.contains('bubble-hidden')) {
-          group[j].classList.remove('show');
-          group[j].classList.add('el-exit');
-        } else if (j === group.length - 1) {
-          group[j].classList.remove('el-exit');
-          group[j].classList.add('show');
-        } else {
-          group[j].classList.remove('show');
-          group[j].classList.add('el-exit');
-        }
-      }
-    }
-
+    // Esta función ahora solo maneja personajes
     var allChars = visualContainer.querySelectorAll('.char, .char-hidden');
     var charsById = {};
     for (var k = 0; k < allChars.length; k++) {
@@ -260,20 +284,24 @@
         scene: scene,
         elements: seq,
         isShort: true,
+        stepStartIndex: allSteps.length
       });
     } else {
+      var sceneStartIndex = allSteps.length;
       allSteps.push({
         scene: scene,
         elements: [],
         isShort: false,
+        stepStartIndex: sceneStartIndex
       });
       var accumulated = [];
-      seq.forEach(function(item) {
+      seq.forEach(function(item, itemIdx) {
         accumulated.push(item);
         allSteps.push({
           scene: scene,
           elements: accumulated.slice(),
           isShort: false,
+          stepStartIndex: sceneStartIndex
         });
       });
     }
@@ -346,18 +374,55 @@
       visualContainer.classList.add('layout-center');
     }
 
-    step.elements.forEach(function(item) {
-      var elDom = buildElement(item);
-      if (step.isShort) {
+    step.elements.forEach(function(item, idx) {
+      var isHidden = item.hidden || false;
+      if (!step.isShort) {
+        // Calculate stepsSinceAppeared matching editor-renderer.js EXACTLY
+        // In editor: stepsSinceAppeared = stepIdx - idx
+        // Here: stepIdx = last element index in accumulated array
+        var stepIdx = step.elements.length - 1;
+        var stepsSinceAppeared = stepIdx - idx;
+        
+        // Debug log (can be removed in production)
+        if (item.disappearAfter || item.showAfter) {
+          console.log('Step', stepIndex, 'item', idx, '- stepsSince:', stepsSinceAppeared, 'disappear:', item.disappearAfter, 'showAfter:', item.showAfter);
+        }
+        
+        // DEFAULT BEHAVIOR: Bubbles without properties - only show most recent
+        // This is standard VN behavior - bubbles replace each other
+        if (item.type === 'bubble' && item.disappearAfter === undefined && item.showAfter === undefined) {
+          // Hide all bubbles except the most recent one (idx === stepIdx)
+          if (idx < stepIdx) {
+            isHidden = true;
+          }
+        } else {
+          // Apply explicit visibility rules (matching editor-renderer.js lines 62-68)
+          if (item.disappearAfter && stepsSinceAppeared >= item.disappearAfter) {
+            isHidden = true;
+          }
+          if (item.showAfter && stepsSinceAppeared >= item.showAfter) {
+            isHidden = false;
+          }
+        }
+      }
+
+      var elDom = buildElement(item, isHidden);
+      elDom.dataset.elIndex = idx;
+
+      if (!isHidden) {
         elDom.classList.add('show');
-        elDom.classList.add('always-on');
-      } else if (skipTransition) {
-        elDom.classList.add('show');
+        if (step.isShort) {
+          elDom.classList.add('always-on');
+        }
       }
       visualContainer.appendChild(elDom);
     });
 
     resolveElementVisibility();
+
+    if (window.__editorEnabled) {
+      setTimeout(markElementsEditable, 50);
+    }
 
     if (!skipTransition && stepIndex > 0) {
       var prevStep = allSteps[stepIndex - 1];
@@ -404,36 +469,34 @@
 
     if (!oldStep || !newStep) return;
 
-    var newItems = newStep.elements.slice(oldStep.elements.length);
-    newItems.forEach(function(item) {
-      var elDom = buildElement(item);
-      visualContainer.appendChild(elDom);
-      void elDom.offsetWidth;
-      elDom.classList.add('show');
-    });
-
-    resolveElementVisibility();
-
-    if (newStepIndex < currentStep) {
-      var allEls = visualContainer.querySelectorAll('.el');
-      var keepCount = newStep.elements.length;
-      for (var i = allEls.length - 1; i >= keepCount; i--) {
-        allEls[i].remove();
-      }
-      resolveElementVisibility();
-    }
-
+    // Simply re-render the step - renderStep handles all visibility logic
     currentStep = newStepIndex;
+    renderStep(newStepIndex, false);
   }
 
   // ========================================
   // SCROLL HANDLER
   // ========================================
   function handleScroll(direction) {
+    if (window.__editorEnabled) {
+      if (window.__onEditorScroll) {
+        window.__onEditorScroll(direction);
+      }
+      return;
+    }
+
     if (isTransitioning || cooldown) return;
 
     var nextStep = currentStep + (direction > 0 ? 1 : -1);
-    if (nextStep < 0 || nextStep >= allSteps.length) return;
+    
+    // Si nos pasamos del total de pasos, cambiar de escena
+    if (nextStep < 0 || nextStep >= allSteps.length) {
+      // En modo preview, intentar cambiar de escena
+      if (window.__previewChangeScene && !window.__previewLocked) {
+        window.__previewChangeScene(direction);
+      }
+      return;
+    }
 
     var currentSceneId = allSteps[currentStep].scene.id;
     var nextSceneId = allSteps[nextStep].scene.id;
@@ -452,6 +515,10 @@
   }
 
   window.addEventListener('wheel', function(e) {
+    var editorPanel = document.getElementById('editor-panel');
+    if (editorPanel && editorPanel.contains(e.target)) {
+      return;
+    }
     e.preventDefault();
     handleScroll(e.deltaY > 0 ? 1 : -1);
   }, { passive: false });
@@ -483,6 +550,134 @@
   // ========================================
   initDOM();
   renderStep(0, true);
+
+  // ========================================
+  // EDITOR HOOKS
+  // ========================================
+  function renderSceneFull(sceneData) {
+    if (!sceneData) return;
+
+    bgContainer.innerHTML = '';
+    bgContainer.appendChild(buildBgDom(sceneData));
+    bgContainer.appendChild(visualContainer);
+
+    visualContainer.innerHTML = '';
+    visualContainer.classList.remove('layout-center');
+
+    var seq = sceneData.sequence || sceneData.elements || [];
+    resolveTargets(seq);
+
+    seq.forEach(function(item, idx) {
+      var elDom = buildElement(item);
+      elDom.dataset.elIndex = idx;
+      elDom.classList.add('show');
+      visualContainer.appendChild(elDom);
+    });
+
+    resolveElementVisibility();
+
+    if (window.__editorEnabled) {
+      setTimeout(markElementsEditable, 50);
+    }
+  }
+
+  function rebuildFromNewContent(newContent) {
+    allSteps = [];
+    currentStep = 0;
+    isTransitioning = false;
+    cooldown = false;
+
+    newContent.forEach(function(scene) {
+      var seq = scene.sequence || scene.elements || [];
+      resolveTargets(seq);
+
+      var isShort = !!scene.isWelcome || scene.id === 'closing';
+
+      if (isShort) {
+        allSteps.push({
+          scene: scene,
+          elements: seq,
+          isShort: true,
+          stepStartIndex: allSteps.length
+        });
+      } else {
+        var sceneStartIndex = allSteps.length;
+        allSteps.push({
+          scene: scene,
+          elements: [],
+          isShort: false,
+          stepStartIndex: sceneStartIndex
+        });
+        var accumulated = [];
+        seq.forEach(function(item, itemIdx) {
+          accumulated.push(item);
+          allSteps.push({
+            scene: scene,
+            elements: accumulated.slice(),
+            isShort: false,
+            stepStartIndex: sceneStartIndex
+          });
+        });
+      }
+    });
+
+    console.log('rebuildFromNewContent: Total steps:', allSteps.length);
+    
+    if (window.__editorEnabled && allSteps.length > 0) {
+      renderSceneFull(allSteps[0].scene);
+    } else {
+      // Find first non-short step to render
+      var firstNonShortStep = allSteps.findIndex(function(s) { return !s.isShort; });
+      console.log('First non-short step index:', firstNonShortStep);
+      if (firstNonShortStep === -1) firstNonShortStep = 0;
+      renderStep(firstNonShortStep, true);
+    }
+  }
+
+  window.__applyEngineData = function(data, sceneIdx, stepIdx) {
+    console.log('__applyEngineData recibido, sceneIdx:', sceneIdx, 'stepIdx:', stepIdx);
+    rebuildFromNewContent(data);
+    
+    // Find target scene
+    var targetSceneId = data[sceneIdx || 0] ? data[sceneIdx || 0].id : data[0].id;
+    console.log('Target scene ID:', targetSceneId);
+    
+    // Find the step to render
+    var stepIndex = 0;
+    if (stepIdx !== undefined) {
+      // Use specific step index if provided
+      stepIndex = stepIdx;
+    } else {
+      // Find first non-short step of target scene
+      stepIndex = allSteps.findIndex(function(s) { return s.scene.id === targetSceneId && !s.isShort; });
+      if (stepIndex === -1) stepIndex = 0;
+    }
+    
+    console.log('Renderizando step:', stepIndex, 'isShort:', allSteps[stepIndex] ? allSteps[stepIndex].isShort : 'N/A');
+    
+    // Always use renderStep (not renderSceneFull) to apply visibility rules
+    currentStep = stepIndex;
+    renderStep(stepIndex, true);
+    markElementsEditable();
+  };
+
+  window.__renderSceneFull = renderSceneFull;
+  window.__getAllSteps = function() { return allSteps; };
+  
+  window.__goToStep = function(stepIndex) {
+    if (stepIndex >= 0 && stepIndex < allSteps.length) {
+      currentStep = stepIndex;
+      renderStep(stepIndex, true);
+    }
+  };
+
+  function markElementsEditable() {
+    if (!window.__editorEnabled) return;
+    var els = visualContainer.querySelectorAll('.char, .scene-object, .bubble, .pos-narration');
+    els.forEach(function(el) {
+      el.classList.add('editable');
+    });
+  }
 
   // ========================================
   // SAKURA

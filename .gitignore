@@ -1,0 +1,20 @@
+# Archivos temporales
+plantillas/
+temp_*
+*.zip
+
+# Archivos de test locales
+test-hiding.js
+
+# Archivos de build o dependencias (si los hubiera)
+node_modules/
+dist/
+build/
+
+# Archivos de entorno
+.env
+.env.local
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
