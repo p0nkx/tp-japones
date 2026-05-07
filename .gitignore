@@ -1,7 +1,6 @@
 # Archivos temporales
-plantillas/
 temp_*
-*.zip
+temp_extract/
 
 # Archivos de test locales
 test-hiding.js
